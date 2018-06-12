@@ -12,28 +12,28 @@ import locales.cldr.data.metadata
 object Locale {
 
   // Default locales required by the specs
-  lazy val ENGLISH: Locale = LocaleRegistry.en.toLocale
-  lazy val FRENCH: Locale = LocaleRegistry.fr.toLocale
-  lazy val GERMAN: Locale = LocaleRegistry.de.toLocale
-  lazy val ITALIAN: Locale = LocaleRegistry.it.toLocale
-  lazy val JAPANESE: Locale = LocaleRegistry.ja.toLocale
-  lazy val KOREAN: Locale = LocaleRegistry.ko.toLocale
-  lazy val CHINESE: Locale = LocaleRegistry.zh.toLocale
-  lazy val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  lazy val TRADITIONAL_CHINESE: Locale = LocaleRegistry.zh_Hant_TW.toLocale
-  lazy val FRANCE: Locale = LocaleRegistry.fr_FR.toLocale
-  lazy val GERMANY: Locale = LocaleRegistry.de_DE.toLocale
-  lazy val ITALY: Locale = LocaleRegistry.it_IT.toLocale
-  lazy val JAPAN: Locale = LocaleRegistry.ja_JP.toLocale
-  lazy val KOREA: Locale = LocaleRegistry.ko_KR.toLocale
-  lazy val CHINA: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  lazy val PRC: Locale = LocaleRegistry.zh_Hans_CN.toLocale
-  lazy val TAIWAN: Locale = LocaleRegistry.zh_Hant_TW.toLocale
-  lazy val UK: Locale = LocaleRegistry.en_GB.toLocale
-  lazy val US: Locale = LocaleRegistry.en_US.toLocale
-  lazy val CANADA: Locale = LocaleRegistry.en_CA.toLocale
-  lazy val CANADA_FRENCH: Locale = LocaleRegistry.fr_CA.toLocale
-  lazy val ROOT: Locale = LocaleRegistry.root.toLocale
+  lazy val ENGLISH: Locale = LocaleRegistry.localeForLanguageTag("en").getOrElse(ROOT)
+  lazy val FRENCH: Locale = LocaleRegistry.localeForLanguageTag("fr").getOrElse(ROOT)
+  lazy val GERMAN: Locale = LocaleRegistry.localeForLanguageTag("de").getOrElse(ROOT)
+  lazy val ITALIAN: Locale = LocaleRegistry.localeForLanguageTag("it").getOrElse(ROOT)
+  lazy val JAPANESE: Locale = LocaleRegistry.localeForLanguageTag("ja").getOrElse(ROOT)
+  lazy val KOREAN: Locale = LocaleRegistry.localeForLanguageTag("ko").getOrElse(ROOT)
+  lazy val CHINESE: Locale = LocaleRegistry.localeForLanguageTag("zh").getOrElse(ROOT)
+  lazy val SIMPLIFIED_CHINESE: Locale = LocaleRegistry.localeForLanguageTag("zh_Hans_CN").getOrElse(ROOT)
+  lazy val TRADITIONAL_CHINESE: Locale = LocaleRegistry.localeForLanguageTag("zh_Hant_TW").getOrElse(ROOT)
+  lazy val FRANCE: Locale = LocaleRegistry.localeForLanguageTag("fr_FR").getOrElse(ROOT)
+  lazy val GERMANY: Locale = LocaleRegistry.localeForLanguageTag("de_DE").getOrElse(ROOT)
+  lazy val ITALY: Locale = LocaleRegistry.localeForLanguageTag("it_IT").getOrElse(ROOT)
+  lazy val JAPAN: Locale = LocaleRegistry.localeForLanguageTag("ja_JP").getOrElse(ROOT)
+  lazy val KOREA: Locale = LocaleRegistry.localeForLanguageTag("ko_KR").getOrElse(ROOT)
+  lazy val CHINA: Locale = LocaleRegistry.localeForLanguageTag("zh_Hans_CN").getOrElse(ROOT)
+  lazy val PRC: Locale = LocaleRegistry.localeForLanguageTag("zh_Hans_CN").getOrElse(ROOT)
+  lazy val TAIWAN: Locale = LocaleRegistry.localeForLanguageTag("zh_Hant_TW").getOrElse(ROOT)
+  lazy val UK: Locale = LocaleRegistry.localeForLanguageTag("en_GB").getOrElse(ROOT)
+  lazy val US: Locale = LocaleRegistry.localeForLanguageTag("en_US").getOrElse(ROOT)
+  lazy val CANADA: Locale = LocaleRegistry.localeForLanguageTag("en_CA").getOrElse(ROOT)
+  lazy val CANADA_FRENCH: Locale = LocaleRegistry.localeForLanguageTag("fr_CA").getOrElse(ROOT)
+  lazy val ROOT: Locale = LocaleRegistry.localeForLanguageTag("root").get.toLocale // We have to assume at least root is present
 
   val PRIVATE_USE_EXTENSION: Char = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'

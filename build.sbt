@@ -95,7 +95,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(commonSettings: _*)
   .settings(
-    name := "scala-java-locales"
+    name := "scala-java-locales",
+    localesFilter := {(l: String) => l == "en" || l == "root"}
   )
   .jvmConfigure(_.enablePlugins(LocalesPlugin))
   .jsConfigure(_.enablePlugins(LocalesPlugin))
@@ -149,6 +150,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
   ).
   nativeConfigure(_.dependsOn(coreNative, macroUtils)).
   jsConfigure(_.dependsOn(coreJS, macroUtils)).
+  jsConfigure(_.enablePlugins(LocalesPlugin)).
   jvmConfigure(_.dependsOn(coreJVM, macroUtils))
 
 lazy val macroUtils = project.in(file("macroUtils")).

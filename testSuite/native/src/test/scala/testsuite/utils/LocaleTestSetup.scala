@@ -15,7 +15,7 @@ trait LocaleTestSetup {
   def assertSame(a: AnyRef, b: AnyRef) = assert(a eq b)
   def assertNull(a: AnyRef) = assert(a == null)
   def fail() = assert(false)
-  def assertArrayEquals(a: Array[AnyRef], b: Array[AnyRef]) = ???//java.util.Arrays.equals(a, b)
+  def assertArrayEquals(a: Array[AnyRef], b: Array[AnyRef]) = java.util.Arrays.equals(a, b)
 
   def cleanDatabase: Unit = {
     LocaleRegistry.resetRegistry()

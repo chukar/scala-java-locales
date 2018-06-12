@@ -22,4 +22,4 @@ addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.3")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
 
-addSbtPlugin("io.github.cquiroz" % "sbt-locales" % "0.0.1")
+addSbtPlugin("io.github.cquiroz" % "sbt-locales" % "0.0.2-SNAPSHOT")

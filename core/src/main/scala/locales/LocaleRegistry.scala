@@ -13,55 +13,13 @@ import locales.cldr.data
 object LocaleRegistry {
 
   // The spec requires some locales by default
-  lazy val en: LDML         = data.en
-  lazy val fr: LDML         = data.fr
-  lazy val de: LDML         = data.de
-  lazy val it: LDML         = data.it
-  lazy val ja: LDML         = data.ja
-  lazy val ko: LDML         = data.ko
-  lazy val zh: LDML         = data.zh
-  // The JVM uses Chinese without script unlike CLDR
-  lazy val zh_Hans_CN: LDML = data.zh_Hans_CN
-    .copy(locale = data.zh_Hans_CN.locale.copy(script = None))
-  lazy val zh_Hant_TW: LDML = data.zh_Hant_TW
-    .copy(locale = data.zh_Hant_TW.locale.copy(script = None))
-  lazy val fr_FR: LDML      = data.fr_FR
-  lazy val de_DE: LDML      = data.de_DE
-  lazy val it_IT: LDML      = data.it_IT
-  lazy val ja_JP: LDML      = data.ja_JP
-  lazy val ko_KR: LDML      = data.ko_KR
-  lazy val en_GB: LDML      = data.en_GB
-  lazy val en_US: LDML      = data.en_US
-  lazy val en_CA: LDML      = data.en_CA
-  lazy val fr_CA: LDML      = data.fr_CA
+  // lazy val en: LDML         = ldml(Locale.ENGLISH).getOrElse(root)
   lazy val root: LDML       = data.root
 
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])
 
-  private lazy val defaultLocales: Map[String, LDML] = Map(
-    root.languageTag -> root,
-    en.languageTag -> en,
-    fr.languageTag -> fr,
-    de.languageTag -> de,
-    it.languageTag -> it,
-    ja.languageTag -> ja,
-    ko.languageTag -> ko,
-    zh.languageTag -> zh,
-    zh_Hans_CN.languageTag -> zh_Hans_CN,
-    zh_Hant_TW.languageTag -> zh_Hant_TW,
-    fr_FR.languageTag -> fr_FR,
-    de_DE.languageTag -> de_DE,
-    it_IT.languageTag -> it_IT,
-    ja_JP.languageTag -> ja_JP,
-    ko_KR.languageTag -> ko_KR,
-    en_GB.languageTag -> en_GB,
-    en_US.languageTag -> en_US,
-    en_CA.languageTag -> en_CA,
-    fr_CA.languageTag -> fr_CA
-  )
-
-  private var defaultLocale: Locale = en.toLocale
+  private var defaultLocale: Locale = data.root.toLocale
   private var defaultPerCategory: Map[Locale.Category, Option[Locale]] =
     Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
@@ -78,7 +36,7 @@ object LocaleRegistry {
     * Cleans the registry, useful for testing
     */
   def resetRegistry(): Unit = {
-    defaultLocale = en.toLocale
+    defaultLocale = data.root.toLocale
     defaultPerCategory =
         Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
     ldmls.clear()
@@ -87,9 +45,9 @@ object LocaleRegistry {
 
   private def initDefaultLocales(): Unit = {
     // Initialize defaults
-    defaultLocales.foreach {
-      case (_, l) => installLocale(l)
-    }
+    // defaultLocales.foreach {
+    //   case (_, l) => installLocale(l)
+    // }
   }
 
   def default: Locale = defaultLocale
