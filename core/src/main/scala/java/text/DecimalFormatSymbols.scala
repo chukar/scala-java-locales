@@ -4,9 +4,7 @@ import java.util.Locale
 
 import locales.LocaleRegistry
 
-import locales.cldr.{LDML, NumberingSystem, Symbols}
-import locales.cldr.data.root
-import locales.cldr.data.numericsystems.latn
+import locales.cldr.{LocalesProvider, LDML, NumberingSystem, Symbols}
 
 object DecimalFormatSymbols {
 
@@ -23,11 +21,11 @@ object DecimalFormatSymbols {
     // Find the correct numbering systems for the ldml
     def ns(ldml: LDML): NumberingSystem = {
       ldml.defaultNS.flatMap { n =>
-        root.digitSymbols.find(_.ns == n).collect {
+        LocalesProvider.root.digitSymbols.find(_.ns == n).collect {
           case s@Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
           case s => n
         }
-      }.getOrElse(latn)
+      }.getOrElse(LocalesProvider.latn)
     }
 
     LocaleRegistry

@@ -7,6 +7,8 @@ import scala.collection.{Map, mutable}
 import locales.cldr.LDML
 import locales.cldr.data
 
+import locales.cldr.LocalesProvider
+
 /**
   * Implements a database of locales
   */
@@ -14,12 +16,12 @@ object LocaleRegistry {
 
   // The spec requires some locales by default
   // lazy val en: LDML         = ldml(Locale.ENGLISH).getOrElse(root)
-  lazy val root: LDML       = data.root
+  lazy val root: LDML       = LocalesProvider.root
 
   case class LocaleCldr(locale: Locale,
       decimalFormatSymbol: Option[DecimalFormatSymbols])
 
-  private var defaultLocale: Locale = data.root.toLocale
+  private var defaultLocale: Locale = LocalesProvider.root.toLocale
   private var defaultPerCategory: Map[Locale.Category, Option[Locale]] =
     Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
@@ -36,7 +38,7 @@ object LocaleRegistry {
     * Cleans the registry, useful for testing
     */
   def resetRegistry(): Unit = {
-    defaultLocale = data.root.toLocale
+    defaultLocale = LocalesProvider.root.toLocale
     defaultPerCategory =
         Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
     ldmls.clear()

@@ -6,8 +6,7 @@ import scala.collection.{Map => SMap, Set => SSet}
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 import locales.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
-
-import locales.cldr.data.metadata
+import locales.cldr.LocalesProvider
 
 object Locale {
 
@@ -33,7 +32,7 @@ object Locale {
   lazy val US: Locale = LocaleRegistry.localeForLanguageTag("en_US").getOrElse(ROOT)
   lazy val CANADA: Locale = LocaleRegistry.localeForLanguageTag("en_CA").getOrElse(ROOT)
   lazy val CANADA_FRENCH: Locale = LocaleRegistry.localeForLanguageTag("fr_CA").getOrElse(ROOT)
-  lazy val ROOT: Locale = LocaleRegistry.localeForLanguageTag("root").get.toLocale // We have to assume at least root is present
+  lazy val ROOT: Locale = LocaleRegistry.localeForLanguageTag("root").get // We have to assume at least root is present
 
   val PRIVATE_USE_EXTENSION: Char = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
@@ -306,9 +305,9 @@ object Locale {
   def getAvailableLocales(): Array[Locale] =
     LocaleRegistry.availableLocales.toArray
 
-  def getISOCountries(): Array[String] = metadata.isoCountries
+  def getISOCountries(): Array[String] = LocalesProvider.metadata.isoCountries
 
-  def getISOLanguages(): Array[String] = metadata.isoLanguages
+  def getISOLanguages(): Array[String] = LocalesProvider.metadata.isoLanguages
 
   private def parseLanguageTag(tag: String): Option[Locale] = {
     // grandfathered mapping

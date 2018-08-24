@@ -4,21 +4,21 @@ import locales.LocaleRegistry
 import scala.collection.{Map => SMap, Set => SSet}
 import scala.collection.JavaConverters._
 import locales.cldr.{CurrencyDataFractionsInfo, CurrencyType}
-import locales.cldr.data.currencydata
+import locales.cldr.LocalesProvider
 
 object Currency {
-  private val countryCodeToCurrencyCodeMap: SMap[String, String] = currencydata.regions.map{ r =>
+  private val countryCodeToCurrencyCodeMap: SMap[String, String] = LocalesProvider.currencydata.regions.map{ r =>
     r.countryCode -> (r.currencies.find{ _.to.isEmpty } orElse r.currencies.headOption).map{ _.currencyCode }.get
   }.toMap
 
-  private val all: SSet[Currency] = currencydata.currencyTypes.map{ currencyType: CurrencyType =>
+  private val all: SSet[Currency] = LocalesProvider.currencydata.currencyTypes.map{ currencyType: CurrencyType =>
     val fractions: CurrencyDataFractionsInfo = (
-      currencydata.fractions.find{ _.currencyCode == currencyType.currencyCode } orElse
-      currencydata.fractions.find{ _.currencyCode == "DEFAULT" }
+      LocalesProvider.currencydata.fractions.find{ _.currencyCode == currencyType.currencyCode } orElse
+      LocalesProvider.currencydata.fractions.find{ _.currencyCode == "DEFAULT" }
     ).get
 
     val numericCode: Int =
-      currencydata.numericCodes.find{ _.currencyCode == currencyType.currencyCode }.map{ _.numericCode }.getOrElse(0)
+      LocalesProvider.currencydata.numericCodes.find{ _.currencyCode == currencyType.currencyCode }.map{ _.numericCode }.getOrElse(0)
 
     Currency(currencyType.currencyCode, numericCode, fractions.digits, currencyType.currencyName, None)
   }.toSet

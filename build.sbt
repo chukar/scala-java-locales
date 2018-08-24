@@ -96,11 +96,12 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    localesFilter := {(l: String) => l == "en" || l == "root"}
+    localesFilter := {(l: String) => l == "en" || l == "root"},
+    libraryDependencies += "io.github.cquiroz" %% "cldr-api" % "0.1.0-SNAPSHOT"
   )
   .jvmConfigure(_.enablePlugins(LocalesPlugin))
-  .jsConfigure(_.enablePlugins(LocalesPlugin))
-  .nativeConfigure(_.enablePlugins(LocalesPlugin))
+  // .jsConfigure(_.enablePlugins(LocalesPlugin))
+  // .nativeConfigure(_.enablePlugins(LocalesPlugin))
 
 lazy val coreJS: Project = core.js
   .settings(
