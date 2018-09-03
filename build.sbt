@@ -89,7 +89,7 @@ lazy val scalajs_locales: Project = project.in(file("."))
     publishLocal := {}
   )
   // don't include scala-native by default
-  .aggregate(coreJS, coreJVM, testSuiteJS, testSuiteJVM)
+  .aggregate(core.js, core.jvm, testSuite.js, testSuite.jvm)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -99,12 +99,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     localesFilter := {(l: String) => l == "en" || l == "root"},
     libraryDependencies += "io.github.cquiroz" %% "cldr-api" % "0.1.0-SNAPSHOT"
   )
-  .jvmConfigure(_.enablePlugins(LocalesPlugin))
-  // .jsConfigure(_.enablePlugins(LocalesPlugin))
-  // .nativeConfigure(_.enablePlugins(LocalesPlugin))
-
-lazy val coreJS: Project = core.js
-  .settings(
+  .jsSettings(
     scalacOptions ++= {
       val tagOrHash =
         if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
@@ -116,10 +111,7 @@ lazy val coreJS: Project = core.js
       }
     }
   )
-
-lazy val coreJVM: Project = core.jvm
-lazy val coreNative: Project = core.native
-  .settings(
+  .nativeSettings(
     sources in (Compile,doc) := Seq.empty
   )
 
@@ -136,11 +128,8 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
     parallelExecution in Test := false,
     name := "scala-java-locales testSuite on JS"
   ).
-  nativeSettings(
-    parallelExecution in Test := false,
-    name := "scala-java-locales testSuite on ScalaNative",
-    nativeLinkStubs := true
-  ).
+  jsConfigure(_.dependsOn(core.js, macroUtils)).
+  jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin)).
   jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
     fork in Test := true,
@@ -149,10 +138,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform).
     javaOptions in Test ++= Seq("-Duser.language=en", "-Duser.country=", "-Djava.locale.providers=CLDR", "-Dfile.encoding=UTF8"),
     name := "scala-java-locales testSuite on JVM"
   ).
-  nativeConfigure(_.dependsOn(coreNative, macroUtils)).
-  jsConfigure(_.dependsOn(coreJS, macroUtils)).
-  jsConfigure(_.enablePlugins(LocalesPlugin)).
-  jvmConfigure(_.dependsOn(coreJVM, macroUtils))
+  jvmConfigure(_.dependsOn(core.jvm, macroUtils))
 
 lazy val macroUtils = project.in(file("macroUtils")).
   settings(commonSettings).
@@ -175,7 +161,3 @@ lazy val macroUtils = project.in(file("macroUtils")).
       }
     }
   )
-
-lazy val testSuiteJS: Project = testSuite.js
-lazy val testSuiteJVM: Project = testSuite.jvm
-lazy val testSuiteNative: Project = testSuite.native
