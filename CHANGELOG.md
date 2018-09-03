@@ -7,30 +7,11 @@
 * Scala versions 2.10.7, 2.11.13, 2.12.5 and 2.13.0-M4
 * Scala native 0.3.8
 
-## 0.5.3-cldr31
+## 0.3.11-cldr33
 
-* Updated to scala.js 0.6.15
-* Updated to scala 2.11.11
-* Updated to scala 2.12.2
-
-## 0.5.2-cldr31
-
-+_ Improved SimpleDateFormat with a partial implementation of format +_ Updated CLDR to version 31 +_ Updated to scala.js 0.6.15 and scala 2.12.1 +_ Use io.github.cquiroz organization
-+\* Fix source map path
-
-## 0.5.1-cldr30
-
-* Set the correct url for sourcemaps
-
-## 0.5.0-cldr30
-
-* Added implementation of java.util.NumberFormat
-* Added implementation of java.util.DecimalFormat
-* Changed organization to io.github.cquiroz
-
-## 0.4.0-cldr30
-
-* Added implementation of java.util.Currency
+* Scala.js 0.6.25 and 1.0.0-M4
+* Scala versions 2.10.7, 2.11.13, 2.12.5 and 2.13.0-M4
+* Scala native 0.3.8
 
 ## 0.3.10-cldr32
 
