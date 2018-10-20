@@ -7,6 +7,8 @@
 * Scala versions 2.10.7, 2.11.13, 2.12.5 and 2.13.0-M4
 * Scala native 0.3.8
 * Update to cldr34
+* Support scala 2.12.7 and 2.13.0-M5
+* Support Scala.js 1.0.0-M6
 
 ## 0.3.11-cldr33
 
