@@ -279,7 +279,7 @@ object LocaleTest extends TestSuite with LocaleTestSetup {
       // The data from CLDR gives a different amount of countries and
       // languages than the JVM
       val countriesCount = if (Platform.executingInJVM) 250 else 247
-      val languagesCount = if (Platform.executingInJVM) 188 else 126
+      val languagesCount = if (Platform.executingInJVM) 188 else 131
       assertEquals(countriesCount, Locale.getISOCountries.length)
       assertEquals(languagesCount, Locale.getISOLanguages.length)
     }
