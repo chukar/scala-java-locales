@@ -4,3 +4,5 @@ core/.jvm
 core/.native
 target/
 .idea
+.metals
+.bloop
