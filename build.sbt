@@ -4,7 +4,7 @@ import sbt.Keys._
 val cldrVersion = settingKey[String]("The version of CLDR used.")
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion := "34",
+  cldrVersion := "35",
   version := s"0.6.0-cldr${cldrVersion.value}-SNAPSHOT",
   organization := "io.github.cquiroz",
   scalaVersion := "2.12.8",
