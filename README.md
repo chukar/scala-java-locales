@@ -19,7 +19,7 @@ There is planned work to unify both lines and have a single line making more mod
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31"
+libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.14-cldr35"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -28,7 +28,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   .jsSettings(
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-locales" % "0.5.2-cldr31"
+    libraryDependencies += "com.github.cquiroz" %%% "scala-java-locales" % "0.3.14-cldr35"
   )
 ```
 
@@ -111,8 +111,8 @@ A very simple `Scala.js` project is available at [scalajs-locales-demo](https://
 + Andrea Peruffo [@andreaTP](https://github.com/AndreaTP)
 
 ## Publishing
-
-on 0.6.22
+=======
+on 0.6.27
 
 ```
 sbt
@@ -135,7 +135,7 @@ sonatyeRelease
 
 ## License
 
-Copyright &copy; 2016 Carlos Quiroz
+Copyright &copy; 2019 Carlos Quiroz
 
 `scala-java-locales` is distributed under the
 [BSD 3-Clause license](./LICENSE.txt).
