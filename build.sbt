@@ -10,9 +10,9 @@ val commonSettings: Seq[Setting[_]] = Seq(
   scalaVersion := "2.12.8",
   crossScalaVersions := {
     if (scalaJSVersion.startsWith("0.6")) {
-      Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0-RC1")
+      Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0-RC2")
     } else {
-      Seq("2.11.12", "2.12.8", "2.13.0-RC1")
+      Seq("2.11.12", "2.12.8", "2.13.0-RC2")
     }
   },
   scalacOptions ++= Seq("-deprecation", "-feature"),

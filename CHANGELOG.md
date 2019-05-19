@@ -3,7 +3,7 @@
 ## 0.6.0-cldr35
 
 * Update to cldr35
-* Support scala 2.12.8 and 2.13.0-RC1
+* Support scala 2.12.8 and 2.13.0-RC2
 * Support Scala.js 0.6.27 and 1.0.0-M7
 * Unification of 0.3 and 0.5 branches
 
