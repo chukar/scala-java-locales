@@ -25,4 +25,4 @@ libraryDependencies := {
   }
 }
 
-addSbtPlugin("io.github.cquiroz" % "sbt-locales" % "0.0.2-SNAPSHOT")
+addSbtPlugin("io.github.cquiroz" % "sbt-locales" % "0.1.0-SNAPSHOT")
