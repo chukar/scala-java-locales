@@ -480,9 +480,13 @@ object ScalaLocaleCodeGen {
     parseParentLocales(XML.withSAXParser(parser).loadFile(parentLocalesSupplementalData))
   }
 
-  def generateCalendarsFile(base: File, calendars: List[Calendar]): File =
+  def generateCalendarsFile(
+      base: File,
+      calendars: List[Calendar],
+      filter: String => Boolean
+  ): File =
     // Generate numeric systems source code
-    writeGeneratedTree(base, "calendars", CodeGenerator.calendars(calendars))
+    writeGeneratedTree(base, "calendars", CodeGenerator.calendars(calendars, filter))
 
   def buildLDMLDescriptors(
       data: File,
@@ -551,16 +555,15 @@ object ScalaLocaleCodeGen {
       base: File,
       data: File,
       filter: String => Boolean,
-      nsFilter: String => Boolean
+      nsFilter: String => Boolean,
+      calendarFilter: String => Boolean
   ): List[File] = {
-    val nanos = System.nanoTime()
-    println("Generate")
+    val nanos          = System.nanoTime()
     val numericSystems = readNumberingSystems(data)
     val f1             = generateNumberingSystemsFile(base, numericSystems, nsFilter)
 
-    val calendars     = readCalendars(data)
-    val parentLocales = readParentLocales(data)
-    val f2            = generateCalendarsFile(base, calendars)
+    val calendars = readCalendars(data)
+    val f2        = generateCalendarsFile(base, calendars, calendarFilter)
 
     val numericSystemsMap: Map[String, NumberingSystem] =
       numericSystems.map(n => n.id -> n)(breakOut)
@@ -569,8 +572,9 @@ object ScalaLocaleCodeGen {
 
     val ldmls = buildLDMLDescriptors(data, numericSystemsMap, latnNS, filter)
 
-    val f3 = generateMetadataFile(base, ldmls)
-    val f4 = generateLocalesFile(base, ldmls, parentLocales)
+    val f3            = generateMetadataFile(base, ldmls)
+    val parentLocales = readParentLocales(data)
+    val f4            = generateLocalesFile(base, ldmls, parentLocales)
 
     val currencyData = readCurrencyData(data)
     val f5           = generateCurrencyDataFile(base, currencyData)

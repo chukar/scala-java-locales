@@ -21,3 +21,25 @@ object NumberingSystemFilter {
   }
 
 }
+
+// Selection of Numbering Systems
+sealed trait CalendarFilter extends Product with Serializable {
+  def filter: String => Boolean
+}
+
+object CalendarFilter {
+  case object None extends CalendarFilter {
+    def filter: String => Boolean = _ => false
+  }
+  case object All extends CalendarFilter {
+    def filter: String => Boolean = _ => true
+  }
+  final case class Selection(s: List[String]) extends CalendarFilter {
+    def filter: String => Boolean = s.contains
+  }
+
+  object Selection {
+    def apply(s: String): Selection = Selection(List(s))
+  }
+
+}

@@ -26,9 +26,10 @@ object LocalesPlugin extends AutoPlugin {
     /**
       * Settings
       */
-    val localesFilter = settingKey[String => Boolean]("Filter for locales names")
-    val nsFilter      = settingKey[NumberingSystemFilter]("Filter for locales names")
-    val dbVersion     = settingKey[CLDRVersion]("Version of the cldr database")
+    val localesFilter  = settingKey[String => Boolean]("Filter for locales names")
+    val nsFilter       = settingKey[NumberingSystemFilter]("Filter for numbering systems")
+    val calendarFilter = settingKey[CalendarFilter]("Filter for calendars")
+    val dbVersion      = settingKey[CLDRVersion]("Version of the cldr database")
     val localesCodeGen =
       taskKey[Seq[JFile]]("Generate scala.js compatible database of tzdb data")
     lazy val baseLocalesSettings: Seq[Def.Setting[_]] =
@@ -52,6 +53,7 @@ object LocalesPlugin extends AutoPlugin {
                 resourcesManaged = (resourceManaged in Compile).value,
                 localesFilter = localesFilter.value,
                 nsFilter = nsFilter.value,
+                calendarFilter = calendarFilter.value,
                 dbVersion = dbVersion.value,
                 log = log
               )
@@ -69,19 +71,21 @@ object LocalesPlugin extends AutoPlugin {
   // override def requires = ScalaJSPlugin // org.scalajs.sbtplugin.ScalaJSPlugin
   override lazy val buildSettings = Seq(
     localesFilter := { case _ => true },
-    nsFilter := NumberingSystemFilter.None,
+    nsFilter := NumberingSystemFilter.Selection("latm"),
+    calendarFilter := CalendarFilter.Selection("gregorian"),
     dbVersion := LatestVersion
   )
   // a group of settings that are automatically added to projects.
   override val projectSettings =
-    inConfig(Compile)(baseLocalesSettings) ++
-      inConfig(Test)(baseLocalesSettings)
+    inConfig(Compile)(baseLocalesSettings) // ++
+  // inConfig(Test)(baseLocalesSettings)
 
   def localesCodeGenImpl(
       sourceManaged: JFile,
       resourcesManaged: JFile,
       localesFilter: String => Boolean,
       nsFilter: NumberingSystemFilter,
+      calendarFilter: CalendarFilter,
       dbVersion: CLDRVersion,
       log: Logger
   ): Set[JFile] =
@@ -107,7 +111,8 @@ object LocalesPlugin extends AutoPlugin {
             sourceManaged,
             resourcesManaged / "locales",
             localesFilter,
-            nsFilter
+            nsFilter,
+            calendarFilter
           )
 
       //     else

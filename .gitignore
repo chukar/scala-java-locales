@@ -6,5 +6,4 @@ target/
 .metals
 .bloop
 .idea
-.metals
-.bloop
+project/metals.sbt
