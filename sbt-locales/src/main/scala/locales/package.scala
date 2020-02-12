@@ -22,7 +22,7 @@ object NumberingSystemFilter {
 
 }
 
-// Selection of Numbering Systems
+// Selection of Calendars
 sealed trait CalendarFilter extends Product with Serializable {
   def filter: String => Boolean
 }
@@ -35,6 +35,28 @@ object CalendarFilter {
     def filter: String => Boolean = _ => true
   }
   final case class Selection(s: List[String]) extends CalendarFilter {
+    def filter: String => Boolean = s.contains
+  }
+
+  object Selection {
+    def apply(s: String): Selection = Selection(List(s))
+  }
+
+}
+
+// Selection of Locales
+sealed trait LocalesFilter extends Product with Serializable {
+  def filter: String => Boolean
+}
+
+object LocalesFilter {
+  case object None extends LocalesFilter {
+    def filter: String => Boolean = _ => false
+  }
+  case object All extends LocalesFilter {
+    def filter: String => Boolean = _ => true
+  }
+  final case class Selection(s: List[String]) extends LocalesFilter {
     def filter: String => Boolean = s.contains
   }
 

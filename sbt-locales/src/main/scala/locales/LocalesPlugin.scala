@@ -26,9 +26,9 @@ object LocalesPlugin extends AutoPlugin {
     /**
       * Settings
       */
-    val localesFilter  = settingKey[String => Boolean]("Filter for locales names")
     val nsFilter       = settingKey[NumberingSystemFilter]("Filter for numbering systems")
     val calendarFilter = settingKey[CalendarFilter]("Filter for calendars")
+    val localesFilter  = settingKey[LocalesFilter]("Filter for locales")
     val dbVersion      = settingKey[CLDRVersion]("Version of the cldr database")
     val localesCodeGen =
       taskKey[Seq[JFile]]("Generate scala.js compatible database of tzdb data")
@@ -70,7 +70,7 @@ object LocalesPlugin extends AutoPlugin {
   override def requires = org.scalajs.sbtplugin.ScalaJSPlugin
   // override def requires = ScalaJSPlugin // org.scalajs.sbtplugin.ScalaJSPlugin
   override lazy val buildSettings = Seq(
-    localesFilter := { case _ => true },
+    localesFilter := LocalesFilter.Selection("root"),
     nsFilter := NumberingSystemFilter.Selection("latm"),
     calendarFilter := CalendarFilter.Selection("gregorian"),
     dbVersion := LatestVersion
@@ -83,7 +83,7 @@ object LocalesPlugin extends AutoPlugin {
   def localesCodeGenImpl(
       sourceManaged: JFile,
       resourcesManaged: JFile,
-      localesFilter: String => Boolean,
+      localesFilter: LocalesFilter,
       nsFilter: NumberingSystemFilter,
       calendarFilter: CalendarFilter,
       dbVersion: CLDRVersion,

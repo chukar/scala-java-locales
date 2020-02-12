@@ -44,13 +44,19 @@ object IOTasks {
   def generateCLDR(
       base: JFile,
       data: JFile,
-      filter: String => Boolean,
+      localesFilter: LocalesFilter,
       nsFilter: NumberingSystemFilter,
       calendarFilter: CalendarFilter
   ): IO[Seq[JFile]] =
     IO(
       ScalaLocaleCodeGen
-        .generateDataSourceCode(base, data, filter, nsFilter.filter, calendarFilter.filter)
+        .generateDataSourceCode(
+          base,
+          data,
+          localesFilter.filter,
+          nsFilter.filter,
+          calendarFilter.filter
+        )
     )
 
   def providerFile(base: JFile, name: String): IO[File] = IO {

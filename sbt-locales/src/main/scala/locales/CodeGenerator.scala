@@ -12,7 +12,8 @@ object CodeGenerator {
       packageObject: String,
       ldmls: List[XMLLDML],
       only: List[String],
-      parentLocales: Map[String, List[String]]
+      parentLocales: Map[String, List[String]],
+      nsFilter: String => Boolean
   ): Tree = {
     val langs = ldmls.map(_.scalaSafeName.split("_").toList)
     // Root must always be available
@@ -21,9 +22,9 @@ object CodeGenerator {
     val objectBlock = if (only.nonEmpty) {
       ldmls
         .filter(a => only.contains(a.scalaSafeName))
-        .map(buildClassTree(root, langs, parentLocales))
+        .map(buildClassTree(root, langs, parentLocales, nsFilter))
     } else {
-      ldmls.map(buildClassTree(root, langs, parentLocales))
+      ldmls.map(buildClassTree(root, langs, parentLocales, nsFilter))
     }
 
     BLOCK(
@@ -33,6 +34,7 @@ object CodeGenerator {
         IMPORT(REF("locales.cldr.Symbols")),
         IMPORT(REF("locales.cldr.CalendarSymbols")),
         IMPORT(REF("locales.cldr.CalendarPatterns")),
+        IMPORT(REF("locales.cldr.DateTimePattern")),
         IMPORT(REF("locales.cldr.NumberPatterns")),
         IMPORT(REF("locales.cldr.NumberCurrency")),
         IMPORT(REF("locales.cldr.CurrencySymbol")),
@@ -64,7 +66,8 @@ object CodeGenerator {
   def buildClassTree(
       root: XMLLDML,
       langs: List[List[String]],
-      parentLocales: Map[String, List[String]]
+      parentLocales: Map[String, List[String]],
+      nsFilter: String => Boolean
   )(ldml: XMLLDML): Tree = {
     val ldmlSym                 = getModule("LDML")
     val ldmlNumericSym          = getModule("Symbols")
@@ -73,6 +76,7 @@ object CodeGenerator {
     val ldmlCurrencyDisplayName = getModule("CurrencyDisplayName")
     val ldmlCalendarSym         = getModule("CalendarSymbols")
     val ldmlCalendarPatternsSym = getModule("CalendarPatterns")
+    val ldmlDatePatternSym      = getModule("DateTimePattern")
     val ldmlNumberPatternsSym   = getModule("NumberPatterns")
     val ldmlLocaleSym           = getModule("LDMLLocale")
 
@@ -89,32 +93,36 @@ object CodeGenerator {
     val defaultNS = ldml.defaultNS.fold(NONE)(s => SOME(REF(s.id)))
 
     // Locales only use the default numeric system
-    val numericSymbols = ldml.digitSymbols.map {
-      case (ns, symb) =>
-        val decimal  = symb.decimal.fold(NONE)(s => SOME(LIT(s)))
-        val group    = symb.group.fold(NONE)(s => SOME(LIT(s)))
-        val list     = symb.list.fold(NONE)(s => SOME(LIT(s)))
-        val percent  = symb.percent.fold(NONE)(s => SOME(LIT(s)))
-        val minus    = symb.minus.fold(NONE)(s => SOME(LIT(s)))
-        val perMille = symb.perMille.fold(NONE)(s => SOME(LIT(s)))
-        val infinity = symb.infinity.fold(NONE)(s => SOME(LIT(s)))
-        val nan      = symb.nan.fold(NONE)(s => SOME(LIT(s)))
-        val exp      = symb.exp.fold(NONE)(s => SOME(LIT(s)))
-        Apply(
-          ldmlNumericSym,
-          REF(ns.id),
-          symb.aliasOf.fold(NONE)(n => SOME(REF(n.id))),
-          decimal,
-          group,
-          list,
-          percent,
-          minus,
-          perMille,
-          infinity,
-          nan,
-          exp
-        )
-    }
+    val numericSymbols = ldml.digitSymbols
+      .filter {
+        case (ns, _) => nsFilter.apply(ns.id)
+      }
+      .map {
+        case (ns, symb) =>
+          val decimal  = symb.decimal.fold(NONE)(s => SOME(LIT(s)))
+          val group    = symb.group.fold(NONE)(s => SOME(LIT(s)))
+          val list     = symb.list.fold(NONE)(s => SOME(LIT(s)))
+          val percent  = symb.percent.fold(NONE)(s => SOME(LIT(s)))
+          val minus    = symb.minus.fold(NONE)(s => SOME(LIT(s)))
+          val perMille = symb.perMille.fold(NONE)(s => SOME(LIT(s)))
+          val infinity = symb.infinity.fold(NONE)(s => SOME(LIT(s)))
+          val nan      = symb.nan.fold(NONE)(s => SOME(LIT(s)))
+          val exp      = symb.exp.fold(NONE)(s => SOME(LIT(s)))
+          Apply(
+            ldmlNumericSym,
+            REF(ns.id),
+            symb.aliasOf.fold(NONE)(n => SOME(REF(n.id))),
+            decimal,
+            group,
+            list,
+            percent,
+            minus,
+            perMille,
+            infinity,
+            nan,
+            exp
+          )
+      }
 
     val currencies = ldml.currencies.map { c =>
       val symbols = LIST(c.symbols.map { s =>
@@ -142,21 +150,21 @@ object CodeGenerator {
       }
       .fold(NONE)(s => SOME(s))
 
-    val gcp = ldml.datePatterns
+    val gcp = ldml.calendarPatterns
       .map { cs =>
-        def patternToIndex(i: String) = i match {
-          case "full"   => 0
-          case "long"   => 1
-          case "medium" => 2
-          case "short"  => 3
-          case x        => throw new IllegalArgumentException(s"Unknown format $x, abort ")
-        }
-
-        val dates = MAKE_MAP(
-          cs.datePatterns.map(p => TUPLE(LIT(patternToIndex(p.patternType)), LIT(p.pattern)))
+        println(cs)
+        // val dates = MAKE_MAP(
+        //   cs.datePatterns.map(p => TUPLE(LIT(p._1), LIT(p._2.pattern)))
+        // )
+        val dates = LIST(
+          cs.datePatterns
+            .map(x => Apply(ldmlDatePatternSym, LIT(x._2.patternType), LIT(x._2.pattern)))
+            .toList
         )
-        val times = MAKE_MAP(
-          cs.timePatterns.map(p => TUPLE(LIT(patternToIndex(p.patternType)), LIT(p.pattern)))
+        val times = LIST(
+          cs.timePatterns
+            .map(x => Apply(ldmlDatePatternSym, LIT(x._2.patternType), LIT(x._2.pattern)))
+            .toList
         )
         Apply(ldmlCalendarPatternsSym, dates, times)
       }
@@ -229,8 +237,7 @@ object CodeGenerator {
     val calendars = c.filter(c => filter(c.id))
 
     BLOCK(
-      IMPORT(REF("locales.cldr.Calendar")),
-      IMPORT(REF("locales.cldr.data.model._")).withComment(autoGeneratedCommend),
+      IMPORT(REF("locales.cldr.Calendar")).withComment(autoGeneratedCommend),
       OBJECTDEF("calendars") := BLOCK(
         (LAZYVAL("all", "List[Calendar]") := LIST(calendars.map(c => REF(c.safeName)))) +:
           calendars

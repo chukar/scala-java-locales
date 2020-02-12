@@ -1,5 +1,7 @@
 package locales
 
+import cats._
+import cats.implicits._
 import java.io.{File, FileInputStream, InputStreamReader}
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -110,26 +112,28 @@ object ScalaLocaleCodeGen {
   }
 
   def readCalendarPatterns(xml: Node): Option[CalendarPatterns] = {
-    def readPatterns(n: Node, sub: String, formatType: String): List[DateTimePattern] =
+    def readPatterns(n: Node, sub: String, formatType: String): List[(Int, DateTimePattern)] =
       for {
         ft <- (n \ formatType).toList
         p  <- ft \ sub \ "pattern"
-        if (p \ "@alt").text != "variant"
-      } yield DateTimePattern((ft \ "@type").text, p.text)
+        v  = { println(p \ "@alt"); (p \ "@alt").text }
+        t  = (ft \ "@type").text
+        if v != "variant"
+      } yield DateTimePattern.formatIndex(t) -> DateTimePattern(t, p.text)
 
     val datePatterns = (for {
       df <- xml \\ "dateFormats"
     } yield {
       readPatterns(df, "dateFormat", "dateFormatLength")
-    }).headOption.map(_.toList)
+    }).headOption.foldMap(_.toList).toMap
 
     val timePatterns = (for {
       df <- xml \\ "timeFormats"
     } yield {
       readPatterns(df, "timeFormat", "timeFormatLength")
-    }).headOption.map(_.toList)
+    }).headOption.foldMap(_.toList).toMap
 
-    Some(CalendarPatterns(datePatterns.getOrElse(Nil), timePatterns.getOrElse(Nil)))
+    Some(CalendarPatterns(datePatterns, timePatterns))
   }
 
   // Pass in currency types into this, so we can augment the CurrencyData to include the master code list
@@ -516,12 +520,13 @@ object ScalaLocaleCodeGen {
   def generateLocalesFile(
       base: File,
       clazzes: List[XMLLDML],
-      parentLocales: Map[String, List[String]]
+      parentLocales: Map[String, List[String]],
+      nsFilter: String => Boolean
   ): File = {
     val names = clazzes.map(_.scalaSafeName)
 
     // Generate locales code
-    val stdTree = CodeGenerator.buildClassTree("data", clazzes, names, parentLocales)
+    val stdTree = CodeGenerator.buildClassTree("data", clazzes, names, parentLocales, nsFilter)
     writeGeneratedTree(base, "data", stdTree)
   }
 
@@ -574,13 +579,13 @@ object ScalaLocaleCodeGen {
 
     val f3            = generateMetadataFile(base, ldmls)
     val parentLocales = readParentLocales(data)
-    val f4            = generateLocalesFile(base, ldmls, parentLocales)
+    val f4            = generateLocalesFile(base, ldmls, parentLocales, nsFilter)
 
     val currencyData = readCurrencyData(data)
     val f5           = generateCurrencyDataFile(base, currencyData)
     val f6           = generateLocalesProvider(base)
 
     println("Generation took " + (System.nanoTime() - nanos) / 1000000 + " [ms]")
-    List(f1) //, f2, f3, f4, f5)
+    List(f1, f2, f3, f4) //, f5)
   }
 }
