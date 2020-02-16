@@ -37,12 +37,14 @@ object DecimalFormatUtil {
     PatternCharMinus
   )
 
-  private val numberPatternChars = List(PatternCharZeroDigit,
-                                        PatternCharDigit,
-                                        PatternCharDecimalSeparator,
-                                        PatternCharMinus,
-                                        PatternCharGroupingSeparator,
-                                        PatternCharExponent)
+  private val numberPatternChars = List(
+    PatternCharZeroDigit,
+    PatternCharDigit,
+    PatternCharDecimalSeparator,
+    PatternCharMinus,
+    PatternCharGroupingSeparator,
+    PatternCharExponent
+  )
 
   private val digitPatternChars = List(PatternCharZeroDigit, PatternCharDigit)
   private val digitAndGroupPatternChars =
@@ -65,7 +67,7 @@ object DecimalFormatUtil {
     val prefix    = new StringBuilder()
     val body      = new StringBuilder()
     val suffix    = new StringBuilder()
-    val quoteChar = '''
+    val quoteChar = '\''
 
     // Fast parsing with mutable vars
     var prefixReady = false
@@ -154,13 +156,13 @@ object DecimalFormatUtil {
     }
 
   implicit class RichString(val s: String) extends AnyVal {
-    def toBlankOption: Option[String] = {
-      if (s == null) None else {
+    def toBlankOption: Option[String] =
+      if (s == null) None
+      else {
         s.find { !Character.isWhitespace(_) }.map { _ =>
           s
         }
       }
-    }
   }
 
   // This probably isn't perfect if there is a malformed pattern ("#0#0.0#0E#0") but should be good enough

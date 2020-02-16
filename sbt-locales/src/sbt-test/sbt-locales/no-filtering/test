@@ -1,5 +1,0 @@
-> managedSources
-$ exec cat jvm/target/scala-2.12/src_managed/main/locales/cldr/data/data.scala
-$ copy-file jvm/target/scala-2.12/src_managed/main/locales/cldr/data/data.scala /Users/cquiroz/data.scala
-$ pause
-> compile

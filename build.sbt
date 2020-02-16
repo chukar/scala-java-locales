@@ -85,44 +85,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
   }
 )
 
-lazy val api = crossProject(JSPlatform, JVMPlatform, NativePlatform)
-  .crossType(CrossType.Pure)
-  .in(file("api"))
-  .settings(commonSettings: _*)
-  .settings(
-    name := "cldr-api",
-    scalaVersion := "2.12.10",
-    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
-  )
-
-lazy val sbt_locales = project
-  .in(file("sbt-locales"))
-  .enablePlugins(SbtPlugin)
-  .enablePlugins(ScalaJSPlugin)
-  .settings(commonSettings: _*)
-  .settings(
-    name := "sbt-locales",
-    scalaVersion := "2.12.10",
-    crossScalaVersions := Seq(),
-    publishArtifact in (Compile, packageDoc) := false,
-    scriptedLaunchOpts := {
-      scriptedLaunchOpts.value ++
-        Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-    },
-    scriptedBufferLog := false,
-    addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "0.6.32"),
-    addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0"),
-    libraryDependencies ++= Seq(
-      "com.eed3si9n"           %% "gigahorse-okhttp" % "0.5.0",
-      "org.scala-lang.modules" %% "scala-xml"        % "1.2.0",
-      "com.github.pathikrit"   %% "better-files"     % "3.8.0",
-      "org.typelevel"          %% "cats-core"        % "2.1.0",
-      "org.typelevel"          %% "cats-effect"      % "2.1.0",
-      "com.eed3si9n"           %% "treehugger"       % "0.4.4"
-    )
-  )
-  .dependsOn(api.jvm)
-
 lazy val scalajs_locales: Project = project
   .in(file("."))
   .settings(commonSettings: _*)
@@ -133,13 +95,14 @@ lazy val scalajs_locales: Project = project
     publishArtifact := false
   )
   // don't include scala-native by default
-  .aggregate(api.js, api.jvm, sbt_locales, core.js, core.jvm, testSuite.js, testSuite.jvm)
+  .aggregate(core.js, core.jvm, testSuite.js, testSuite.jvm)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(commonSettings: _*)
   .settings(
-    name := "scala-java-locales"
+    name := "scala-java-locales",
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.1.0-SNAPSHOT"
   )
   .jsSettings(
     scalacOptions ++= {
@@ -156,7 +119,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .nativeSettings(
     sources in (Compile, doc) := Seq.empty
   )
-  .dependsOn(api)
 
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
@@ -164,8 +126,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     publish := {},
     publishLocal := {},
     publishArtifact := false,
-    scalaVersion := "2.12.10",
-    libraryDependencies += "com.lihaoyi" %%% "utest" % "0.6.4" % "test",
+    libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.2" % "test",
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
   .jsSettings(
