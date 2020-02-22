@@ -2,7 +2,6 @@ package testsuite.javalib.util
 
 import java.util.{ IllformedLocaleException, Locale }
 
-import utest._
 import testsuite.utils.Platform
 import testsuite.utils.AssertThrows.expectThrows
 
