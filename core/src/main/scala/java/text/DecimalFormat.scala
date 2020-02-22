@@ -1,14 +1,14 @@
 package java.text
 
-import java.math.{RoundingMode, BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger}
-import java.util.{Currency, Locale}
-import locales.{DecimalFormatUtil, LocaleRegistry, ParsedPattern}
-import scala.math.{max, min}
+import java.math.{ RoundingMode, BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger }
+import java.util.{ Currency, Locale }
+import locales.{ DecimalFormatUtil, LocaleRegistry, ParsedPattern }
+import scala.math.{ max, min }
 
 // The constructor needs a non-localized pattern
 class DecimalFormat(
-    private[this] val pattern: String,
-    private[this] var symbols: DecimalFormatSymbols
+  private[this] val pattern: String,
+  private[this] var symbols: DecimalFormatSymbols
 ) extends NumberFormat {
 
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
@@ -17,7 +17,7 @@ class DecimalFormat(
     this(
       LocaleRegistry
         .ldml(Locale.getDefault)
-        .flatMap { _.numberPatterns.decimalFormat }
+        .flatMap(_.numberPatterns.decimalFormat)
         .getOrElse("#,##0.##"),
       DecimalFormatSymbols.getInstance()
     )
@@ -62,9 +62,9 @@ class DecimalFormat(
 
   /* Write number to strBuilder, return Digits Written */
   private def formatNumber(
-      number: JavaBigInteger,
-      builder: StringBuilder,
-      isIntegerPart: Boolean
+    number:        JavaBigInteger,
+    builder:       StringBuilder,
+    isIntegerPart: Boolean
   ): Int = {
     import bigIntegerOrdering.mkOrderingOps
 
@@ -145,17 +145,15 @@ class DecimalFormat(
     } else count
 
   private def repeatDigits(count: Int, c: Char): String =
-    (0 until count).map { _ =>
-      c
-    }.mkString
+    (0 until count).map(_ => c).mkString
 
   // Handle formatting any big decimal...I'm sure this algorithm can be optimized
   // ...Trying to get a mostly correct/easier to read/understand implementation first
   // TODO: Currently ignoring FieldPosition argument
   private def subFormat(
-      number: JavaBigDecimal,
-      toAppendTo: StringBuffer,
-      pos: FieldPosition
+    number:     JavaBigDecimal,
+    toAppendTo: StringBuffer,
+    pos:        FieldPosition
   ): StringBuffer = {
     import bigDecimalOrdering.mkOrderingOps
 
@@ -236,9 +234,7 @@ class DecimalFormat(
         val truncatedStr: String = unscaledString.dropWhile(_ == symbols.getZeroDigit)
 
         truncatedStr +
-          (0 until (fractionMaxDigits - unscaledString.length)).map { _ =>
-            symbols.getZeroDigit
-          }.mkString
+          (0 until (fractionMaxDigits - unscaledString.length)).map(_ => symbols.getZeroDigit).mkString
       }.reverse
 
       // Add our fraction with significant prefix zeroes
@@ -304,9 +300,7 @@ class DecimalFormat(
   def getNegativePrefix(): String = {
     val p: String =
       parsedPattern.negativePrefix
-        .orElse(parsedPattern.defaultNegativePrefix.map { p =>
-          s"${symbols.getMinusSign}$p"
-        })
+        .orElse(parsedPattern.defaultNegativePrefix.map(p => s"${symbols.getMinusSign}$p"))
         .getOrElse(symbols.getMinusSign.toString)
 
     replaceLocalizedPrefixOrSuffixSymbols(p)
@@ -447,9 +441,9 @@ class DecimalFormat(
 
     val result = new StringBuilder
 
-    parsedPattern.positivePrefix.map { result.append }
+    parsedPattern.positivePrefix.map(result.append)
     result.append(pattern)
-    parsedPattern.positiveSuffix.map { result.append }
+    parsedPattern.positiveSuffix.map(result.append)
 
     // Add negative pattern
     if (parsedPattern.negativePrefix.isDefined || parsedPattern.negativeSuffix.isDefined) {
@@ -458,9 +452,9 @@ class DecimalFormat(
         if (localize) symbols.getPatternSeparator else DecimalFormatUtil.PatternCharSeparator
       )
 
-      parsedPattern.negativePrefix.foreach { result.append }
+      parsedPattern.negativePrefix.foreach(result.append)
       result.append(pattern)
-      parsedPattern.negativeSuffix.foreach { result.append }
+      parsedPattern.negativeSuffix.foreach(result.append)
     }
 
     result.toString()
@@ -474,13 +468,13 @@ class DecimalFormat(
 
     this.parsedPattern = parsedPattern.copy(
       maximumIntegerDigits = Some(newMax),
-      minimumIntegerDigits = parsedPattern.minimumIntegerDigits.map { min(_, newMax) }
+      minimumIntegerDigits = parsedPattern.minimumIntegerDigits.map(min(_, newMax))
     )
   }
 
   private def minFractionDigitsAreEmpty: Boolean =
     parsedPattern.minimumFractionDigits.isEmpty ||
-      parsedPattern.minimumFractionDigits.exists { _ == 0 }
+      parsedPattern.minimumFractionDigits.exists(_ == 0)
 
   override def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(0)
 
@@ -488,7 +482,7 @@ class DecimalFormat(
     val newMin: Int = max(newValue, 0)
 
     this.parsedPattern = parsedPattern.copy(
-      maximumIntegerDigits = parsedPattern.maximumIntegerDigits.map { max(_, newMin) },
+      maximumIntegerDigits = parsedPattern.maximumIntegerDigits.map(max(_, newMin)),
       minimumIntegerDigits = Some(newMin)
     )
   }
@@ -500,7 +494,7 @@ class DecimalFormat(
 
     this.parsedPattern = parsedPattern.copy(
       maximumFractionDigits = Some(newMax),
-      minimumFractionDigits = parsedPattern.minimumFractionDigits.map { min(_, newMax) }
+      minimumFractionDigits = parsedPattern.minimumFractionDigits.map(min(_, newMax))
     )
   }
 
@@ -510,7 +504,7 @@ class DecimalFormat(
     val newMin: Int = max(newValue, 0)
 
     this.parsedPattern = parsedPattern.copy(
-      maximumFractionDigits = parsedPattern.maximumFractionDigits.map { max(_, newMin) },
+      maximumFractionDigits = parsedPattern.maximumFractionDigits.map(max(_, newMin)),
       minimumFractionDigits = Some(newMin)
     )
   }

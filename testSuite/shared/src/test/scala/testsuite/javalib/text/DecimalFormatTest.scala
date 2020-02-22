@@ -1,7 +1,7 @@
 package testsuite.javalib.text
 
 import java.math.RoundingMode
-import java.text.{DecimalFormat, DecimalFormatSymbols, NumberFormat}
+import java.text.{ DecimalFormat, DecimalFormatSymbols, NumberFormat }
 import java.util.Locale
 
 import testsuite.utils.Platform

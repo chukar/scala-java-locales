@@ -391,12 +391,12 @@ class LocaleTest extends munit.FunSuite {
   }
 
   def assertLocaleFromTag(
-      l: Locale,
-      ln: String,
-      c: String,
-      s: String,
-      v: String,
-      ext: Map[Char, String] = Map.empty
+    l:   Locale,
+    ln:  String,
+    c:   String,
+    s:   String,
+    v:   String,
+    ext: Map[Char, String] = Map.empty
   ): Unit = {
     assertEquals(ln, l.getLanguage)
     assertEquals(c, l.getCountry)
@@ -478,27 +478,27 @@ class LocaleTest extends munit.FunSuite {
   test("for_language_tag_grandfathereded") {
     // grandfathered mapping
     val mapping = List(
-      "art-lojban"  -> "jbo",
-      "i-ami"       -> "ami",
-      "i-bnn"       -> "bnn",
-      "i-hak"       -> "hak",
-      "i-klingon"   -> "tlh",
-      "i-lux"       -> "lb",
-      "i-hak"       -> "hak",
-      "i-navajo"    -> "nv",
-      "i-pwn"       -> "pwn",
-      "i-tao"       -> "tao",
-      "i-tay"       -> "tay",
-      "i-tsu"       -> "tsu",
-      "no-bok"      -> "nb",
-      "no-nyn"      -> "nn",
-      "sgn-BE-FR"   -> "sfb",
-      "sgn-BE-NL"   -> "vgt",
-      "sgn-CH-DE"   -> "sgg",
-      "zh-guoyu"    -> "cmn",
-      "zh-hakka"    -> "hak",
-      "zh-min-nan"  -> "nan",
-      "zh-xiang"    -> "hsn",
+      "art-lojban" -> "jbo",
+      "i-ami" -> "ami",
+      "i-bnn" -> "bnn",
+      "i-hak" -> "hak",
+      "i-klingon" -> "tlh",
+      "i-lux" -> "lb",
+      "i-hak" -> "hak",
+      "i-navajo" -> "nv",
+      "i-pwn" -> "pwn",
+      "i-tao" -> "tao",
+      "i-tay" -> "tay",
+      "i-tsu" -> "tsu",
+      "no-bok" -> "nb",
+      "no-nyn" -> "nn",
+      "sgn-BE-FR" -> "sfb",
+      "sgn-BE-NL" -> "vgt",
+      "sgn-CH-DE" -> "sgg",
+      "zh-guoyu" -> "cmn",
+      "zh-hakka" -> "hak",
+      "zh-min-nan" -> "nan",
+      "zh-xiang" -> "hsn",
       "cel-gaulish" -> "xtg"
     ) /* In javadocs cel-gaulish is xtg-x-cel-gaulish */
 

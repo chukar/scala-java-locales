@@ -3,7 +3,7 @@ package testsuite.javalib.text
 import java.text.DateFormatSymbols
 import java.util.Locale
 
-import locales.{CalendarConstants, LocaleRegistry}
+import locales.{ CalendarConstants, LocaleRegistry }
 import locales.cldr.LDML
 import locales.cldr.data._
 
@@ -14,14 +14,14 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   Locale.setDefault(Locale.US)
 
   case class LocaleTestItem(
-      tag: String,
-      cldr21: Boolean,
-      months: List[String],
-      shortMonths: List[String],
-      weekdays: List[String],
-      shortWeekdays: List[String],
-      amPm: List[String],
-      eras: List[String]
+    tag:           String,
+    cldr21:        Boolean,
+    months:        List[String],
+    shortMonths:   List[String],
+    weekdays:      List[String],
+    shortWeekdays: List[String],
+    amPm:          List[String],
+    eras:          List[String]
   )
 
   val root = LocaleRegistry.root
@@ -1721,8 +1721,8 @@ class DateFormatSymbolsTest extends munit.FunSuite {
   }
 
   def test_setter(
-      get: DateFormatSymbols => Array[String],
-      set: (DateFormatSymbols, Array[String]) => Unit
+    get: DateFormatSymbols => Array[String],
+    set: (DateFormatSymbols, Array[String]) => Unit
   ): Unit = {
     val dfs = new DateFormatSymbols()
     expectThrows(classOf[NullPointerException], set(dfs, null))

@@ -1,6 +1,6 @@
 package testsuite.javalib.text
 
-import java.text.{FieldPosition, Format, ParsePosition}
+import java.text.{ FieldPosition, Format, ParsePosition }
 
 class ParsePositionTest extends munit.FunSuite {
   test("constructors") {

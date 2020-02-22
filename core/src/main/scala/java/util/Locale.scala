@@ -1,11 +1,11 @@
 package java.util
 
-import locales.{BCP47, LocaleRegistry}
+import locales.{ BCP47, LocaleRegistry }
 
-import scala.collection.{Map => SMap, Set => SSet}
+import scala.collection.{ Map => SMap, Set => SSet }
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
-import locales.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
+import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
 import locales.cldr.LocalesProvider
 
 object Locale {
@@ -192,14 +192,14 @@ object Locale {
   }
 
   private case class LocaleBuilder(
-      strict: Boolean = true,
-      language: Option[String] = None,
-      region: Option[String] = None,
-      variant: Option[String] = None,
-      script: Option[String] = None,
-      extensions: SMap[Char, String] = SMap.empty,
-      unicodeExtensions: SMap[String, String] = SMap.empty,
-      unicodeAttributes: SSet[String] = SSet.empty
+    strict:            Boolean              = true,
+    language:          Option[String]       = None,
+    region:            Option[String]       = None,
+    variant:           Option[String]       = None,
+    script:            Option[String]       = None,
+    extensions:        SMap[Char, String]   = SMap.empty,
+    unicodeExtensions: SMap[String, String] = SMap.empty,
+    unicodeAttributes: SSet[String]         = SSet.empty
   ) {
 
     def language(language: String): Option[LocaleBuilder] =
@@ -312,33 +312,33 @@ object Locale {
   private def parseLanguageTag(tag: String): Option[Locale] = {
     // grandfathered mapping
     val grandfathered = SMap(
-      "art-lojban"  -> "jbo",
-      "i-ami"       -> "ami",
-      "i-bnn"       -> "bnn",
-      "i-hak"       -> "hak",
-      "i-klingon"   -> "tlh",
-      "i-lux"       -> "lb",
-      "i-hak"       -> "hak",
-      "i-navajo"    -> "nv",
-      "i-pwn"       -> "pwn",
-      "i-tao"       -> "tao",
-      "i-tay"       -> "tay",
-      "i-tsu"       -> "tsu",
-      "no-bok"      -> "nb",
-      "no-nyn"      -> "nn",
-      "sgn-BE-FR"   -> "sfb",
-      "sgn-BE-NL"   -> "vgt",
-      "sgn-CH-DE"   -> "sgg",
-      "zh-guoyu"    -> "cmn",
-      "zh-hakka"    -> "hak",
-      "zh-min-nan"  -> "nan",
-      "zh-xiang"    -> "hsn",
+      "art-lojban" -> "jbo",
+      "i-ami" -> "ami",
+      "i-bnn" -> "bnn",
+      "i-hak" -> "hak",
+      "i-klingon" -> "tlh",
+      "i-lux" -> "lb",
+      "i-hak" -> "hak",
+      "i-navajo" -> "nv",
+      "i-pwn" -> "pwn",
+      "i-tao" -> "tao",
+      "i-tay" -> "tay",
+      "i-tsu" -> "tsu",
+      "no-bok" -> "nb",
+      "no-nyn" -> "nn",
+      "sgn-BE-FR" -> "sfb",
+      "sgn-BE-NL" -> "vgt",
+      "sgn-CH-DE" -> "sgg",
+      "zh-guoyu" -> "cmn",
+      "zh-hakka" -> "hak",
+      "zh-min-nan" -> "nan",
+      "zh-xiang" -> "hsn",
       "cel-gaulish" -> "xtg",
-      "en-GB-oed"   -> "en-GB-x-oed",
-      "i-default"   -> "en-x-i-default",
-      "i-enochian"  -> "und-x-i-enochian",
-      "i-mingo"     -> "see-x-i-mingo",
-      "zh-min"      -> "nan-x-zh-min"
+      "en-GB-oed" -> "en-GB-x-oed",
+      "i-default" -> "en-x-i-default",
+      "i-enochian" -> "und-x-i-enochian",
+      "i-mingo" -> "see-x-i-mingo",
+      "zh-min" -> "nan-x-zh-min"
     )
 
     def sanitizePrivateExtension(b: LocaleBuilder, p: Option[String]): LocaleBuilder = {
@@ -377,8 +377,8 @@ object Locale {
           b3 <- b2.region(r.getOrElse(""))
           b4 <- b3.variant(v.mkString("_"))
           b5 <- exts.foldLeft(Option(b4)) {
-                 case (bu, (c, xv)) => bu.flatMap(_.extension(c, xv))
-               }
+            case (bu, (c, xv)) => bu.flatMap(_.extension(c, xv))
+          }
         } yield sanitizePrivateExtension(b5, p)
         b.map(_.build)
 
@@ -424,14 +424,14 @@ object Locale {
 }
 
 class Locale private[util] (
-    private[this] val language: String,
-    private[this] val country: String,
-    private[this] val variant: String,
-    private[this] val script: Option[String],
-    private[this] val _extensions: SMap[Char, String],
-    private[this] val unicodeExtensions: SMap[String, String],
-    private[this] val unicodeAttributes: SSet[String],
-    private[this] val supportSpecialCases: Boolean = true
+  private[this] val language:            String,
+  private[this] val country:             String,
+  private[this] val variant:             String,
+  private[this] val script:              Option[String],
+  private[this] val _extensions:         SMap[Char, String],
+  private[this] val unicodeExtensions:   SMap[String, String],
+  private[this] val unicodeAttributes:   SSet[String],
+  private[this] val supportSpecialCases: Boolean = true
 ) {
 
   // Required by the javadocs

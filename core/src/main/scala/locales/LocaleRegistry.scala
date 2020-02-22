@@ -3,7 +3,7 @@ package locales
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-import scala.collection.{Map, mutable}
+import scala.collection.{ Map, mutable }
 import org.portablescala.reflect._
 import locales.cldr.LDML
 import locales.cldr.CLDRMetadata
@@ -54,7 +54,7 @@ object LocaleRegistry {
     if (newLocale == null) {
       throw new NullPointerException("Argument cannot be null")
     }
-    defaultLocale = newLocale
+    defaultLocale      = newLocale
     defaultPerCategory = Locale.Category.values().map(_ -> Some(newLocale)).toMap
   }
 

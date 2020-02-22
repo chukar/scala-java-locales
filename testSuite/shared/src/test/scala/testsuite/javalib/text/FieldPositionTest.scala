@@ -1,6 +1,6 @@
 package testsuite.javalib.text
 
-import java.text.{FieldPosition, Format}
+import java.text.{ FieldPosition, Format }
 
 final case class TestField(name: String) extends Format.Field(name)
 

@@ -1,7 +1,7 @@
 package testsuite.locales
 
 import locales.BCP47
-import locales.BCP47.{GrandfatheredTag, LanguageTag, PrivateUseTag}
+import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
 import locales.cldr.data.metadata._
 
 class BCP47Test extends munit.FunSuite {
@@ -47,4 +47,3 @@ class BCP47Test extends munit.FunSuite {
     }
   }
 }
-

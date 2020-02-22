@@ -4,7 +4,7 @@ import java.util.Locale
 
 import locales.LocaleRegistry
 
-import locales.cldr.{LDML, NumberingSystem, Symbols}
+import locales.cldr.{ LDML, NumberingSystem, Symbols }
 
 object DecimalFormatSymbols {
 
@@ -35,10 +35,10 @@ object DecimalFormatSymbols {
   }
 
   private def toDFS(
-      locale: Locale,
-      dfs: DecimalFormatSymbols,
-      ldml: LDML,
-      ns: NumberingSystem
+    locale: Locale,
+    dfs:    DecimalFormatSymbols,
+    ldml:   LDML,
+    ns:     NumberingSystem
   ): DecimalFormatSymbols = {
 
     def parentSymbols(ldml: LDML, ns: NumberingSystem): Option[Symbols] =
@@ -47,9 +47,9 @@ object DecimalFormatSymbols {
         .orElse(ldml.parent.flatMap(parentSymbols(_, ns)))
 
     def parentSymbolR[A](
-        ldml: LDML,
-        ns: NumberingSystem,
-        contains: Symbols => Option[A]
+      ldml:     LDML,
+      ns:       NumberingSystem,
+      contains: Symbols => Option[A]
     ): Option[A] =
       parentSymbols(ldml, ns).flatMap {
         case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
@@ -61,10 +61,10 @@ object DecimalFormatSymbols {
       }
 
     def setSymbol[A](
-        ldml: LDML,
-        ns: NumberingSystem,
-        contains: Symbols => Option[A],
-        set: A => Unit
+      ldml:     LDML,
+      ns:       NumberingSystem,
+      contains: Symbols => Option[A],
+      set:      A => Unit
     ): Unit =
       parentSymbolR(ldml, ns, contains).foreach(set)
 

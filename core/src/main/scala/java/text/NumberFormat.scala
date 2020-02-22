@@ -1,10 +1,10 @@
 package java.text
 
 import java.math.RoundingMode
-import java.util.{Currency, Locale}
+import java.util.{ Currency, Locale }
 
 import locales.LocaleRegistry
-import locales.cldr.{LDML, NumberPatterns}
+import locales.cldr.{ LDML, NumberPatterns }
 
 abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean  = false
@@ -28,12 +28,12 @@ abstract class NumberFormat protected () extends Format {
     format(number, new StringBuffer, IgnoreFieldPosition).toString
 
   def format(number: Double, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
-  def format(number: Long, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer
+  def format(number: Long, toAppendTo:   StringBuffer, pos: FieldPosition): StringBuffer
 
   // def parse(source: String, parsePosition: ParsePosition): Number = ???
   // def parse(source: String): Number = ???
 
-  def isParseIntegerOnly(): Boolean             = this.parseIntegerOnly
+  def isParseIntegerOnly(): Boolean = this.parseIntegerOnly
   def setParseIntegerOnly(value: Boolean): Unit = this.parseIntegerOnly = value
 
   def isGroupingUsed(): Boolean
@@ -54,7 +54,7 @@ abstract class NumberFormat protected () extends Format {
   def getCurrency(): Currency
   def setCurrency(currency: Currency): Unit
 
-  def getRoundingMode(): RoundingMode           = roundingMode
+  def getRoundingMode(): RoundingMode = roundingMode
   def setRoundingMode(mode: RoundingMode): Unit = this.roundingMode = mode
 }
 

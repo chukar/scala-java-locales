@@ -1,17 +1,17 @@
 package java.util
 
 import locales.LocaleRegistry
-import scala.collection.{Map => SMap, Set => SSet}
+import scala.collection.{ Map => SMap, Set => SSet }
 import scala.collection.JavaConverters._
-import locales.cldr.{CurrencyDataFractionsInfo, CurrencyType}
+import locales.cldr.{ CurrencyDataFractionsInfo, CurrencyType }
 
 object Currency {
   private val countryCodeToCurrencyCodeMap: SMap[String, String] =
     LocaleRegistry.currencydata.regions.map { r =>
       r.countryCode -> r.currencies
-        .find { _.to.isEmpty }
+        .find(_.to.isEmpty)
         .orElse(r.currencies.headOption)
-        .map { _.currencyCode }
+        .map(_.currencyCode)
         .get
     }.toMap
 
@@ -19,14 +19,14 @@ object Currency {
     currencyType: CurrencyType =>
       val fractions: CurrencyDataFractionsInfo =
         LocaleRegistry.currencydata.fractions
-          .find { _.currencyCode == currencyType.currencyCode }
-          .orElse(LocaleRegistry.currencydata.fractions.find { _.currencyCode == "DEFAULT" })
+          .find(_.currencyCode == currencyType.currencyCode)
+          .orElse(LocaleRegistry.currencydata.fractions.find(_.currencyCode == "DEFAULT"))
           .get
 
       val numericCode: Int =
         LocaleRegistry.currencydata.numericCodes
-          .find { _.currencyCode == currencyType.currencyCode }
-          .map { _.numericCode }
+          .find(_.currencyCode == currencyType.currencyCode)
+          .map(_.numericCode)
           .getOrElse(0)
 
       Currency(
@@ -39,7 +39,7 @@ object Currency {
   }.toSet
 
   private val currencyCodeMap: SMap[String, Currency] =
-    all.toSeq.groupBy { _.getCurrencyCode }.map {
+    all.toSeq.groupBy(_.getCurrencyCode).map {
       case (currencyCode: String, matches: Seq[Currency]) => currencyCode -> matches.head
     }
 
@@ -52,7 +52,7 @@ object Currency {
 
     countryCodeToCurrencyCodeMap
       .get(locale.getCountry)
-      .flatMap { currencyCodeMap.get }
+      .flatMap(currencyCodeMap.get)
       .getOrElse(
         throw new IllegalArgumentException(s"No currency available for ${locale.toLanguageTag}")
       )
@@ -62,11 +62,11 @@ object Currency {
 }
 
 final case class Currency private (
-    currencyCode: String,
-    numericCode: Int,
-    fractionDigits: Int,
-    defaultName: String,
-    currencyLocale: Option[Locale] = None
+  currencyCode:   String,
+  numericCode:    Int,
+  fractionDigits: Int,
+  defaultName:    String,
+  currencyLocale: Option[Locale] = None
 ) {
   import Currency._
 
@@ -86,7 +86,7 @@ final case class Currency private (
     LocaleRegistry
       .ldml(locale)
       .flatMap { ldml =>
-        ldml.getNumberCurrencyDescription(currencyCode).find { _.count.isEmpty }.map { _.name }
+        ldml.getNumberCurrencyDescription(currencyCode).find(_.count.isEmpty).map(_.name)
       }
       .getOrElse(currencyCode)
 
@@ -107,9 +107,9 @@ final case class Currency private (
         // The tests from the JVM indicate we prefer the "wide" over "narrow" symbol
 
         symbols
-          .find { _.alt.isEmpty }
-          .orElse(symbols.find { _.alt.exists { _ == "narrow" } })
-          .map { _.symbol }
+          .find(_.alt.isEmpty)
+          .orElse(symbols.find(_.alt.exists(_ == "narrow")))
+          .map(_.symbol)
       }
       .getOrElse(currencyCode)
 

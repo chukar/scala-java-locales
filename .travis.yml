@@ -18,7 +18,6 @@ install:
   - npm install
 script:
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION macroUtils/publishLocal
-  - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION coreJS/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuiteJS/scalastyle testSuiteJS/test:scalastyle coreNative/scalastyle coreJVM/scalastyle
   - if [[ $TRAVIS_SCALA_VERSION == "2.11.12" ]]; then sbt ++$TRAVIS_SCALA_VERSION coreNative/compile; fi;
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION testSuiteJVM/test
   - sbt -Djava.locale.providers=CLDR ++$TRAVIS_SCALA_VERSION '; set scalaJSStage in Global := FullOptStage' testSuiteJS/test

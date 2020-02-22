@@ -7,7 +7,7 @@ import testsuite.utils.AssertThrows.expectThrows
 class LocaleCategoryTest extends munit.FunSuite {
   import Locale.Category
 
-   test("getOrdinal") {
+  test("getOrdinal") {
     assertEquals(0, Category.DISPLAY.ordinal)
     assertEquals(1, Category.FORMAT.ordinal)
   }

@@ -240,7 +240,7 @@ class DecimalFormatSymbolsTest extends munit.FunSuite {
   }
 
   test("bad_tag_matches_root_dfs") {
-    val l = Locale.forLanguageTag("no_NO")
+    val l   = Locale.forLanguageTag("no_NO")
     val dfs = DecimalFormatSymbols.getInstance(l)
     standardLocalesData.foreach {
       case (Locale.ROOT, symbols) =>
