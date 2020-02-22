@@ -1,7 +1,6 @@
 package testsuite.javalib.text
 
 import java.text.AttributedCharacterIterator.Attribute
-import testsuite.utils.LocaleTestSetup
 
 class AttributedCharacterIteratorTest extends munit.FunSuite {
   test("static_value_to_string") {

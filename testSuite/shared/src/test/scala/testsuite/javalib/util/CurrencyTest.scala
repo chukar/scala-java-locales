@@ -1,11 +1,9 @@
 package testsuite.javalib.util
 
 import java.util.{Currency, Locale}
-import utest._
-import testsuite.utils.LocaleTestSetup
 
 // Shared test data for JVM/JS so it's not duplicated
-trait CurrencyTest extends LocaleTestSetup {
+trait CurrencyTest extends munit.FunSuite {
   case class CurrencyTestResults(
       expectedCurrencyCode: String,
       expectedNumericCode: Int,
@@ -46,37 +44,56 @@ trait CurrencyTest extends LocaleTestSetup {
       jsResults = CurrencyTestResults("CAD", 124, 2, "$", "dollar canadien"),
       jvmResults = CurrencyTestResults("CAD", 124, 2, "$", "dollar canadien")
     ),
-    LocaleCurrencyTest(Locale.CHINA,
-                       jsResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币"),
-                       jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")),
-    LocaleCurrencyTest(Locale.FRANCE,
-                       jsResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
-                       jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "euro")),
-    LocaleCurrencyTest(Locale.GERMANY,
-                       jsResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro"),
-                       jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")),
-    LocaleCurrencyTest(Locale.ITALY,
-                       jsResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
-                       jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")),
-    LocaleCurrencyTest(Locale.JAPAN,
-                       jsResults = CurrencyTestResults("JPY", 392, 0, "￥", "日本円"),
-                       jvmResults = CurrencyTestResults("JPY", 392, 0, "￥", "日本円")),
-    LocaleCurrencyTest(Locale.KOREA,
-                       jsResults = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원"),
-                       jvmResults = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원")),
-    LocaleCurrencyTest(Locale.PRC,
-                       jsResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币"),
-                       jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")),
-    LocaleCurrencyTest(Locale.TAIWAN,
-                       jsResults = CurrencyTestResults("TWD", 901, 2, "$", "新台幣"),
-                       jvmResults = CurrencyTestResults("TWD", 901, 2, "NT$", "新臺幣")),
-    LocaleCurrencyTest(Locale.UK,
-                       jsResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound"),
-                       jvmResults =
-                         CurrencyTestResults("GBP", 826, 2, "£", "British Pound Sterling")),
-    LocaleCurrencyTest(Locale.US,
-                       jsResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"),
-                       jvmResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"))
+    LocaleCurrencyTest(
+      Locale.CHINA,
+      jsResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
+      jvmResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币")
+    ),
+    LocaleCurrencyTest(
+      Locale.FRANCE,
+      jsResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
+      jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "euro")
+    ),
+    LocaleCurrencyTest(
+      Locale.GERMANY,
+      jsResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro"),
+      jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
+    ),
+    LocaleCurrencyTest(
+      Locale.ITALY,
+      jsResults = CurrencyTestResults("EUR", 978, 2, "€", "euro"),
+      jvmResults = CurrencyTestResults("EUR", 978, 2, "€", "Euro")
+    ),
+    LocaleCurrencyTest(
+      Locale.JAPAN,
+      jsResults = CurrencyTestResults("JPY", 392, 0, "￥", "日本円"),
+      jvmResults = CurrencyTestResults("JPY", 392, 0, "￥", "日本円")
+    ),
+    LocaleCurrencyTest(
+      Locale.KOREA,
+      jsResults = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원"),
+      jvmResults = CurrencyTestResults("KRW", 410, 0, "₩", "대한민국 원")
+    ),
+    LocaleCurrencyTest(
+      Locale.PRC,
+      jsResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
+      jvmResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币")
+    ),
+    LocaleCurrencyTest(
+      Locale.TAIWAN,
+      jsResults = CurrencyTestResults("TWD", 901, 2, "$", "新台幣"),
+      jvmResults = CurrencyTestResults("TWD", 901, 2, "NT$", "新臺幣")
+    ),
+    LocaleCurrencyTest(
+      Locale.UK,
+      jsResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound"),
+      jvmResults = CurrencyTestResults("GBP", 826, 2, "£", "British Pound Sterling")
+    ),
+    LocaleCurrencyTest(
+      Locale.US,
+      jsResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar"),
+      jvmResults = CurrencyTestResults("USD", 840, 2, "$", "US Dollar")
+    )
   )
 
   // Given a default locale, lookup other currencies by code & compare values
@@ -196,8 +213,8 @@ trait CurrencyTest extends LocaleTestSetup {
         ),
         CodeCurrencyTest(
           currencyCode = "CNY",
-          jsResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币"),
-          jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
+          jsResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
+          jvmResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币")
         ),
         CodeCurrencyTest(
           currencyCode = "TWD",
@@ -224,15 +241,16 @@ trait CurrencyTest extends LocaleTestSetup {
     def currentTestMsg: String =
       s"defaultLocale: ${Locale.getDefault}, currency: ${currency}, expectedResults: $expectedResults"
 
-    assertEquals(currentTestMsg, expectedCurrencyCode, currency.getCurrencyCode)
-    assertEquals(currentTestMsg, expectedNumericCode, currency.getNumericCode)
-    assertEquals(currentTestMsg, expectedFractionDigits, currency.getDefaultFractionDigits)
-    assertEquals(currentTestMsg, expectedSymbol, currency.getSymbol)
-    assertEquals(currentTestMsg, expectedDisplayName, currency.getDisplayName)
+    assertEquals(expectedCurrencyCode, currency.getCurrencyCode)
+    assertEquals(expectedNumericCode, currency.getNumericCode)
+    assertEquals(expectedFractionDigits, currency.getDefaultFractionDigits)
+    assertEquals(expectedSymbol, currency.getSymbol)
+    assertEquals(expectedDisplayName, currency.getDisplayName)
   }
 
   protected def test_standard_locales(
-      f: CombinedCurrencyTestResults => CurrencyTestResults): Unit = {
+      f: CombinedCurrencyTestResults => CurrencyTestResults
+  ): Unit = {
     // Basic test, get a locale's currency, and test results
     localeCurrencyTests.foreach { test: LocaleCurrencyTest =>
       // Even when you get a currency for a specific locale, description calls (getSymbol and getDisplayName)

@@ -105,7 +105,6 @@ class LocaleTest extends munit.FunSuite {
     assertEquals("", Locale.forLanguageTag("zh-CN").getVariant)
     assertEquals("", Locale.forLanguageTag("zh-CN").getScript)
 
-    locales.LocaleRegistry.ldmls.keys.filter(_.startsWith("zh")).foreach(println)
     assertEquals(Locale.SIMPLIFIED_CHINESE, Locale.forLanguageTag("zh-CN"))
   }
 

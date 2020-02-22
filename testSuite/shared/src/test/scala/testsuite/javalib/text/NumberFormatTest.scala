@@ -5,7 +5,7 @@ import java.util.Locale
 import java.math.RoundingMode
 
 import locales.{DecimalFormatUtil, LocaleRegistry}
-import testsuite.utils.{LocaleTestSetup, Platform}
+import testsuite.utils.Platform
 import testsuite.utils.AssertThrows._
 
 final case class TestCase(
