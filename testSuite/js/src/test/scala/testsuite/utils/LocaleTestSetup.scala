@@ -18,7 +18,6 @@ trait LocaleTestSetup {
   def assertArrayEquals(a: Array[AnyRef], b: Array[AnyRef]) = ???//java.util.Arrays.equals(a, b)
 
   def cleanDatabase: Unit = {
-    LocaleRegistry.resetRegistry()
     // Reset the default locale to english
     Locale.setDefault(Locale.ENGLISH)
   }

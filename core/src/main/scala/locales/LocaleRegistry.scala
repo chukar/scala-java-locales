@@ -17,12 +17,14 @@ object LocaleRegistry {
 
   val provider: LocalesProvider =
     Reflect
-      .lookupLoadableModuleClass("locales.cldr.LocalesProvider$", null)
+      .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
       .getOrElse(sys.error("Needs a locale provider"))
       .loadModule
       .asInstanceOf[LocalesProvider]
 
   val metadata: CLDRMetadata = provider.metadata
+
+  val ldmls = provider.ldmls
 
   // The spec requires some locales by default
   // lazy val en: LDML         = ldml(Locale.ENGLISH).getOrElse(root)
@@ -68,7 +70,10 @@ object LocaleRegistry {
     */
   def localeForLanguageTag(languageTag: String): Option[Locale] =
     // TODO Support alternative tags for the same locale
-    provider.ldmls.get(languageTag).map(_.toLocale)
+    if (languageTag == "und") {
+      Some(Locale.ROOT)
+    } else
+      provider.ldmls.get(languageTag).map(_.toLocale)
 
   /**
     * Returns a list of available locales
@@ -78,5 +83,11 @@ object LocaleRegistry {
   /**
     * Returns the ldml for the given locale
     */
-  def ldml(locale: Locale): Option[LDML] = provider.ldmls.get(locale.toLanguageTag)
+  def ldml(locale: Locale): Option[LDML] = {
+    val tag =
+      if (locale.toLanguageTag() == "zh-CN") "zh-Hans-CN"
+      else if (locale.toLanguageTag() == "zh-TW") "zh-Hant-TW"
+      else locale.toLanguageTag()
+    provider.ldmls.get(tag)
+  }
 }

@@ -18,23 +18,27 @@ object Locale {
   lazy val JAPANESE: Locale = LocaleRegistry.localeForLanguageTag("ja").getOrElse(ROOT)
   lazy val KOREAN: Locale   = LocaleRegistry.localeForLanguageTag("ko").getOrElse(ROOT)
   lazy val CHINESE: Locale  = LocaleRegistry.localeForLanguageTag("zh").getOrElse(ROOT)
-  lazy val SIMPLIFIED_CHINESE: Locale =
-    LocaleRegistry.localeForLanguageTag("zh_Hans_CN").getOrElse(ROOT)
-  lazy val TRADITIONAL_CHINESE: Locale =
-    LocaleRegistry.localeForLanguageTag("zh_Hant_TW").getOrElse(ROOT)
-  lazy val FRANCE: Locale        = LocaleRegistry.localeForLanguageTag("fr_FR").getOrElse(ROOT)
-  lazy val GERMANY: Locale       = LocaleRegistry.localeForLanguageTag("de_DE").getOrElse(ROOT)
-  lazy val ITALY: Locale         = LocaleRegistry.localeForLanguageTag("it_IT").getOrElse(ROOT)
-  lazy val JAPAN: Locale         = LocaleRegistry.localeForLanguageTag("ja_JP").getOrElse(ROOT)
-  lazy val KOREA: Locale         = LocaleRegistry.localeForLanguageTag("ko_KR").getOrElse(ROOT)
-  lazy val CHINA: Locale         = LocaleRegistry.localeForLanguageTag("zh_Hans_CN").getOrElse(ROOT)
-  lazy val PRC: Locale           = LocaleRegistry.localeForLanguageTag("zh_Hans_CN").getOrElse(ROOT)
-  lazy val TAIWAN: Locale        = LocaleRegistry.localeForLanguageTag("zh_Hant_TW").getOrElse(ROOT)
-  lazy val UK: Locale            = LocaleRegistry.localeForLanguageTag("en_GB").getOrElse(ROOT)
-  lazy val US: Locale            = LocaleRegistry.localeForLanguageTag("en_US").getOrElse(ROOT)
-  lazy val CANADA: Locale        = LocaleRegistry.localeForLanguageTag("en_CA").getOrElse(ROOT)
-  lazy val CANADA_FRENCH: Locale = LocaleRegistry.localeForLanguageTag("fr_CA").getOrElse(ROOT)
-  lazy val ROOT: Locale          = LocaleRegistry.localeForLanguageTag("root").get // We have to assume at least root is present
+  lazy val SIMPLIFIED_CHINESE: Locale = {
+    val l = LocaleRegistry.ldmls.getOrElse("zh-Hans-CN", LocaleRegistry.root)
+    l.copy(locale = l.locale.copy(script = None)).toLocale
+  }
+  lazy val TRADITIONAL_CHINESE: Locale = {
+    val l = LocaleRegistry.ldmls.getOrElse("zh-Hant-TW", LocaleRegistry.root)
+    l.copy(locale = l.locale.copy(script = None)).toLocale
+  }
+  lazy val FRANCE: Locale        = LocaleRegistry.localeForLanguageTag("fr-FR").getOrElse(ROOT)
+  lazy val GERMANY: Locale       = LocaleRegistry.localeForLanguageTag("de-DE").getOrElse(ROOT)
+  lazy val ITALY: Locale         = LocaleRegistry.localeForLanguageTag("it-IT").getOrElse(ROOT)
+  lazy val JAPAN: Locale         = LocaleRegistry.localeForLanguageTag("ja-JP").getOrElse(ROOT)
+  lazy val KOREA: Locale         = LocaleRegistry.localeForLanguageTag("ko-KR").getOrElse(ROOT)
+  lazy val CHINA: Locale         = SIMPLIFIED_CHINESE
+  lazy val PRC: Locale           = SIMPLIFIED_CHINESE
+  lazy val TAIWAN: Locale        = TRADITIONAL_CHINESE
+  lazy val UK: Locale            = LocaleRegistry.localeForLanguageTag("en-GB").getOrElse(ROOT)
+  lazy val US: Locale            = LocaleRegistry.localeForLanguageTag("en-US").getOrElse(ROOT)
+  lazy val CANADA: Locale        = LocaleRegistry.localeForLanguageTag("en-CA").getOrElse(ROOT)
+  lazy val CANADA_FRENCH: Locale = LocaleRegistry.localeForLanguageTag("fr-CA").getOrElse(ROOT)
+  lazy val ROOT: Locale          = LocaleRegistry.root.toLocale
 
   val PRIVATE_USE_EXTENSION: Char    = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
@@ -585,9 +589,9 @@ class Locale private[util] (
   def getISO3Country(): String =
     if (country.isEmpty) ""
     else
-      LocaleRegistry.metadata.isoCountries
-        .find(_ == country)
+      LocaleRegistry.metadata.iso3Countries
         .getOrElse(
+          country,
           throw new MissingResourceException(
             "Alpha-3 country code not found",
             "java.util.Locale",
@@ -599,9 +603,9 @@ class Locale private[util] (
     if (language.isEmpty) ""
     else if (language.lengthCompare(3) == 0) language
     else
-      LocaleRegistry.metadata.isoLanguages
-        .find(_ == language)
+      LocaleRegistry.metadata.iso3Languages
         .getOrElse(
+          language,
           throw new MissingResourceException(
             "Alpha-3 language code not found",
             "java.util.Locale",

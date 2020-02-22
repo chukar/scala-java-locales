@@ -10,15 +10,15 @@ abstract class NumberFormat protected () extends Format {
   private[this] var parseIntegerOnly: Boolean  = false
   private[this] var roundingMode: RoundingMode = RoundingMode.HALF_EVEN
 
-  override def parseObject(source: String, pos: ParsePosition): AnyRef
+  // override def parseObject(source: String, pos: ParsePosition): AnyRef
 
   override def format(obj: AnyRef, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer =
     obj match {
       case n: Number if n.doubleValue() == n.longValue() =>
         format(n.longValue(), toAppendTo, pos)
-      case n: Number                                     =>
+      case n: Number =>
         format(n.doubleValue(), toAppendTo, pos)
-      case _                                             =>
+      case _ =>
         throw new IllegalArgumentException("Cannot format given Object as a Number")
     }
 
@@ -108,12 +108,12 @@ object NumberFormat {
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.decimalFormat)
         ptrn
-          .map(
-            p =>
-              new DecimalFormat(
-                p.substring(0, p.indexOf(".")),
-                DecimalFormatSymbols.getInstance(inLocale)
-            ))
+          .map(p =>
+            new DecimalFormat(
+              p.substring(0, p.indexOf(".")),
+              DecimalFormatSymbols.getInstance(inLocale)
+            )
+          )
           .map(integerSetup)
       }
       .getOrElse(new DecimalFormat("", DecimalFormatSymbols.getInstance(inLocale)))

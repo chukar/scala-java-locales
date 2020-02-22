@@ -6,9 +6,10 @@ import locales.{DecimalFormatUtil, LocaleRegistry, ParsedPattern}
 import scala.math.{max, min}
 
 // The constructor needs a non-localized pattern
-class DecimalFormat(private[this] val pattern: String,
-                    private[this] var symbols: DecimalFormatSymbols)
-    extends NumberFormat {
+class DecimalFormat(
+    private[this] val pattern: String,
+    private[this] var symbols: DecimalFormatSymbols
+) extends NumberFormat {
 
   def this(pattern: String) = this(pattern, DecimalFormatSymbols.getInstance())
 
@@ -27,7 +28,7 @@ class DecimalFormat(private[this] val pattern: String,
 
   private var decimalSeparatorAlwaysShown: Boolean = false
   private var parseBigDecimal: Boolean             = false
-  private var currency: Currency                   = Currency.getInstance(Locale.getDefault)
+  private def currency: Currency                   = Currency.getInstance(Locale.getDefault)
 
   // Helpers to avoid using .compareTo, annoying have to re-import within defs
   private val bigIntegerOrdering = implicitly[Ordering[JavaBigInteger]]
@@ -60,9 +61,11 @@ class DecimalFormat(private[this] val pattern: String,
     }
 
   /* Write number to strBuilder, return Digits Written */
-  private def formatNumber(number: JavaBigInteger,
-                           builder: StringBuilder,
-                           isIntegerPart: Boolean): Int = {
+  private def formatNumber(
+      number: JavaBigInteger,
+      builder: StringBuilder,
+      isIntegerPart: Boolean
+  ): Int = {
     import bigIntegerOrdering.mkOrderingOps
 
     var digitsWritten: Int = 0
@@ -149,9 +152,11 @@ class DecimalFormat(private[this] val pattern: String,
   // Handle formatting any big decimal...I'm sure this algorithm can be optimized
   // ...Trying to get a mostly correct/easier to read/understand implementation first
   // TODO: Currently ignoring FieldPosition argument
-  private def subFormat(number: JavaBigDecimal,
-                        toAppendTo: StringBuffer,
-                        pos: FieldPosition): StringBuffer = {
+  private def subFormat(
+      number: JavaBigDecimal,
+      toAppendTo: StringBuffer,
+      pos: FieldPosition
+  ): StringBuffer = {
     import bigDecimalOrdering.mkOrderingOps
 
     val isNegative: Boolean = number.signum == -1
@@ -167,9 +172,13 @@ class DecimalFormat(private[this] val pattern: String,
       if (useScientificNotation) {
         getExponentNumberAndPower(multiplied)
       } else {
-        (multiplied.setScale(max(getMaximumFractionDigits(), getMinimumFractionDigits()),
-                             getRoundingMode),
-         0)
+        (
+          multiplied.setScale(
+            max(getMaximumFractionDigits(), getMinimumFractionDigits()),
+            getRoundingMode
+          ),
+          0
+        )
       }
 
     val integerStrBuilder           = new StringBuilder()
@@ -238,13 +247,15 @@ class DecimalFormat(private[this] val pattern: String,
       // Add zero-end padding minimum fraction digits
       if (fractionStr.length < getMinimumFractionDigits) {
         toAppendTo.append(
-          repeatDigits(getMinimumFractionDigits - fractionStr.length, symbols.getZeroDigit))
+          repeatDigits(getMinimumFractionDigits - fractionStr.length, symbols.getZeroDigit)
+        )
       }
       // No fraction value, but we have a minimum fraction digits to set...
       // 0.00 equals (0) returns false :/, so can't use ordering
     } else if (targetNumber.compareTo(integerPart) == 0 && getMinimumFractionDigits > 0) {
       toAppendTo.append(
-        s"${symbols.getDecimalSeparator}${repeatDigits(getMinimumFractionDigits, symbols.getZeroDigit)}")
+        s"${symbols.getDecimalSeparator}${repeatDigits(getMinimumFractionDigits, symbols.getZeroDigit)}"
+      )
     }
 
     if (useScientificNotation) {
@@ -394,7 +405,8 @@ class DecimalFormat(private[this] val pattern: String,
     if (requiredFractionsStr.nonEmpty || optionalFractionsStr.nonEmpty)
       sb.append(
         if (localize) symbols.getDecimalSeparator
-        else DecimalFormatUtil.PatternCharDecimalSeparator)
+        else DecimalFormatUtil.PatternCharDecimalSeparator
+      )
 
     // Add Fractions
     if (requiredFractionsStr.nonEmpty) sb.append(requiredFractionsStr)
@@ -403,13 +415,16 @@ class DecimalFormat(private[this] val pattern: String,
     // Add Exponents
     if (isExponent) {
       sb.append(
-        if (localize) symbols.getExponentSeparator else DecimalFormatUtil.PatternCharExponent)
+        if (localize) symbols.getExponentSeparator else DecimalFormatUtil.PatternCharExponent
+      )
 
       val minStr: String = parsedPattern.minimumExponentDigits
         .map { len: Int =>
-          repeatDigits(len,
-                       if (localize) symbols.getZeroDigit
-                       else DecimalFormatUtil.PatternCharZeroDigit)
+          repeatDigits(
+            len,
+            if (localize) symbols.getZeroDigit
+            else DecimalFormatUtil.PatternCharZeroDigit
+          )
         }
         .getOrElse("")
 
@@ -417,8 +432,11 @@ class DecimalFormat(private[this] val pattern: String,
 
       val maxStr = parsedPattern.maximumExponentDigits
         .map { len: Int =>
-          repeatDigits(len - minStr.size,
-                       if (localize) symbols.getDigit else DecimalFormatUtil.PatternCharDigit)
+          repeatDigits(
+            len - minStr.size,
+            if (localize) symbols.getDigit
+            else DecimalFormatUtil.PatternCharDigit
+          )
         }
         .getOrElse("")
 
@@ -437,7 +455,8 @@ class DecimalFormat(private[this] val pattern: String,
     if (parsedPattern.negativePrefix.isDefined || parsedPattern.negativeSuffix.isDefined) {
       // Pattern separator
       result.append(
-        if (localize) symbols.getPatternSeparator else DecimalFormatUtil.PatternCharSeparator)
+        if (localize) symbols.getPatternSeparator else DecimalFormatUtil.PatternCharSeparator
+      )
 
       parsedPattern.negativePrefix.foreach { result.append }
       result.append(pattern)
@@ -506,7 +525,7 @@ class DecimalFormat(private[this] val pattern: String,
 
   override def getCurrency(): Currency = currency
 
-  override def setCurrency(currency: Currency): Unit = this.currency = currency
+  override def setCurrency(currency: Currency): Unit = ??? //this.currency = currency
 
   override def clone(): AnyRef = {
     val f = new DecimalFormat(toPattern())

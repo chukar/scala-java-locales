@@ -18,120 +18,120 @@ object DecimalFormatSymbolsTest extends TestSuite with LocaleTestSetup {
   // the JVM and JS
   override def utestBeforeEach(path: Seq[String]): Unit = super.cleanDatabase
 
-  case class LocaleTestItem(ldml: LDML, tag: String, cldr21: Boolean = false)
+  case class LocaleTestItem(tag: String, cldr21: Boolean = false)
 
   val englishSymbols = List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
 
   val standardLocalesData = List(
-    Locale.ROOT                ->
+    Locale.ROOT ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.ENGLISH             -> englishSymbols,
-    Locale.GERMAN              ->
+    Locale.ENGLISH -> englishSymbols,
+    Locale.GERMAN ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.ITALIAN             ->
+    Locale.ITALIAN ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.KOREAN              ->
+    Locale.KOREAN ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CHINESE             ->
+    Locale.CHINESE ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.SIMPLIFIED_CHINESE  ->
+    Locale.SIMPLIFIED_CHINESE ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     Locale.TRADITIONAL_CHINESE ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
-    Locale.GERMANY             ->
+    Locale.GERMANY ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.ITALY               ->
+    Locale.ITALY ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.KOREA               ->
+    Locale.KOREA ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CHINA               ->
+    Locale.CHINA ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.PRC                 ->
+    Locale.PRC ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.TAIWAN              ->
+    Locale.TAIWAN ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E"),
-    Locale.UK                  ->
+    Locale.UK ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.US                  ->
+    Locale.US ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    Locale.CANADA_FRENCH       ->
+    Locale.CANADA_FRENCH ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
 
   val extraLocalesData = List(
     // af uses latn
-    LocaleTestItem(af, "af") ->
+    LocaleTestItem("af") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(az, "az") ->
+    LocaleTestItem("az") ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(az_Cyrl, "az-Cyrl") ->
+    LocaleTestItem("az-Cyrl") ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     // bn has a default ns but it is a latn alias
-    LocaleTestItem(bn, "bn") ->
+    LocaleTestItem("bn") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(es_CL, "es-CL") ->
+    LocaleTestItem("es-CL") ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(zh, "zh") ->
+    LocaleTestItem("zh") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(zh_Hant, "zh-Hant") ->
+    LocaleTestItem("zh-Hant") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "非數值", "-", "E")
   )
 
   // These locales show differences with Java due to a different CLDR version
   val localesDiff = List(
     // ar has a default arab set of symbols
-    LocaleTestItem(ar, "ar", cldr21 = true) ->
+    LocaleTestItem("ar", cldr21 = true) ->
       List("٠", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ليس رقم", "\u002D", "اس"), // JVM
-    LocaleTestItem(ar, "ar") ->
+    LocaleTestItem("ar") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "ليس رقمًا", "-", "E"), // JS
-    LocaleTestItem(fr, "fr", cldr21 = true) ->
+    LocaleTestItem("fr", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(fr, "fr", cldr21 = false) ->
+    LocaleTestItem("fr", cldr21 = false) ->
       List("0", ",", "\u202F", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(it_CH, "it-CH", cldr21 = true) ->
+    LocaleTestItem("it-CH", cldr21 = true) ->
       List("0", ".", "'", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(it_CH, "it-CH") ->
+    LocaleTestItem("it-CH") ->
       List("0", ".", "’", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
     // fa uses arabext
-    LocaleTestItem(fa, "fa", cldr21 = true) ->
+    LocaleTestItem("fa", cldr21 = true) ->
       List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "NaN", "-", "×۱۰^"), // JVM
-    LocaleTestItem(fa, "fa") ->
+    LocaleTestItem("fa") ->
       List("۰", "٫", "٬", "؉", "٪", "#", "؛", "∞", "ناعدد", "−", "×۱۰^"), // JS
-    LocaleTestItem(fi_FI, "fi-FI", cldr21 = true) ->
+    LocaleTestItem("fi-FI", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "-", "E"),
-    LocaleTestItem(fi_FI, "fi-FI", cldr21 = false) ->
+    LocaleTestItem("fi-FI", cldr21 = false) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epäluku", "−", "E"),
-    LocaleTestItem(ja, "ja", cldr21 = true) ->
+    LocaleTestItem("ja", cldr21 = true) ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN（非数）", "-", "E"), // JVM
-    LocaleTestItem(ja, "ja") ->
+    LocaleTestItem("ja") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JS
-    LocaleTestItem(ka, "ka", cldr21 = true) ->
+    LocaleTestItem("ka", cldr21 = true) ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(ka, "ka") ->
+    LocaleTestItem("ka") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "არ არის რიცხვი", "-", "E"), // JS
-    LocaleTestItem(lv, "lv", cldr21 = true) ->
+    LocaleTestItem("lv", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "nav skaitlis", "\u2212", "E"), // JVM
-    LocaleTestItem(lv, "lv") ->
+    LocaleTestItem("lv") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "NS", "-", "E"), // JS
-    LocaleTestItem(my, "my", cldr21 = true) ->
+    LocaleTestItem("my", cldr21 = true) ->
       List("၀", ".", ",", "‰", "%", "#", "၊", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(my, "my") ->
+    LocaleTestItem("my") ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "ဂဏန်းမဟုတ်သော", "-", "E"), // JS
-    LocaleTestItem(smn, "smn", cldr21 = true) ->
+    LocaleTestItem("smn", cldr21 = true) ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"), // JVM
-    LocaleTestItem(smn, "smn") ->
+    LocaleTestItem("smn") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"), // JS
-    LocaleTestItem(smn_FI, "smn-FI", cldr21 = true) ->
+    LocaleTestItem("smn-FI", cldr21 = true) ->
       List("0", ".", ",", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(smn_FI, "smn-FI") ->
+    LocaleTestItem("smn-FI") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "epiloho", "-", "E"),
-    LocaleTestItem(ru_RU, "ru-RU", cldr21 = true) ->
+    LocaleTestItem("ru-RU", cldr21 = true) ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
-    LocaleTestItem(ru_RU, "ru-RU") ->
+    LocaleTestItem("ru-RU") ->
       List("0", ",", "\u00A0", "‰", "%", "#", ";", "∞", "не число", "-", "E"),
-    LocaleTestItem(ca, "ca", cldr21 = true) ->
+    LocaleTestItem("ca", cldr21 = true) ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E"),
-    LocaleTestItem(ca, "ca") ->
+    LocaleTestItem("ca") ->
       List("0", ",", ".", "‰", "%", "#", ";", "∞", "NaN", "-", "E")
   )
 
@@ -153,6 +153,7 @@ object DecimalFormatSymbolsTest extends TestSuite with LocaleTestSetup {
     'test_default_locales_decimal_format_symbol - {
       standardLocalesData.foreach {
         case (l, symbols) =>
+          println(s" Locale $l")
           val dfs = DecimalFormatSymbols.getInstance(l)
           test_dfs(dfs, symbols)
       }
@@ -160,11 +161,8 @@ object DecimalFormatSymbolsTest extends TestSuite with LocaleTestSetup {
 
     'test_extra_locales_decimal_format_symbol - {
       extraLocalesData.foreach {
-        case (LocaleTestItem(d, tag, _), symbols) =>
-          if (!Platform.executingInJVM) {
-            LocaleRegistry.installLocale(d)
-          }
-          val l = Locale.forLanguageTag(tag)
+        case (LocaleTestItem(tag, _), symbols) =>
+          val l   = Locale.forLanguageTag(tag)
           val dfs = DecimalFormatSymbols.getInstance(l)
           test_dfs(dfs, symbols)
       }
@@ -173,10 +171,7 @@ object DecimalFormatSymbolsTest extends TestSuite with LocaleTestSetup {
     // These tests give the same data on CLDR 21
     'test_extra_locales_not_agreeing_decimal_format_symbol - {
       localesDiff.foreach {
-        case (LocaleTestItem(d, tag, cldr21), symbols) =>
-          if (!Platform.executingInJVM) {
-            LocaleRegistry.installLocale(d)
-          }
+        case (LocaleTestItem(tag, cldr21), symbols) =>
           val l = Locale.forLanguageTag(tag)
           val dfs = DecimalFormatSymbols.getInstance(l)
           if (Platform.executingInJVM && cldr21) {
@@ -191,11 +186,6 @@ object DecimalFormatSymbolsTest extends TestSuite with LocaleTestSetup {
     'test_available_locales - {
       val initial = DecimalFormatSymbols.getAvailableLocales.length
       assertTrue(initial > 0)
-      if (!Platform.executingInJVM) {
-        LocaleRegistry.installLocale(af)
-        // In JS all locales have a decimal format symbols instance
-        assertEquals(initial + 1, DecimalFormatSymbols.getAvailableLocales.length)
-      }
     }
 
     'test_defaults - {
@@ -258,6 +248,7 @@ object DecimalFormatSymbolsTest extends TestSuite with LocaleTestSetup {
 
     'test_bad_tag_matches_root_dfs - {
       val l = Locale.forLanguageTag("no_NO")
+      println(l.toLanguageTag())
       val dfs = DecimalFormatSymbols.getInstance(l)
       standardLocalesData.foreach {
         case (Locale.ROOT, symbols) =>

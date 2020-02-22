@@ -16,17 +16,17 @@ object DecimalFormatSymbols {
   def getInstance(locale: Locale): DecimalFormatSymbols =
     initialize(locale, new DecimalFormatSymbols(locale))
 
-  private def initialize(locale: Locale,
-      dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
+  private def initialize(locale: Locale, dfs: DecimalFormatSymbols): DecimalFormatSymbols = {
     // Find the correct numbering systems for the ldml
-    def ns(ldml: LDML): NumberingSystem = {
-      ldml.defaultNS.flatMap { n =>
-        LocaleRegistry.root.digitSymbols.find(_.ns == n).collect {
-          case s@Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
-          case s => n
+    def ns(ldml: LDML): NumberingSystem =
+      ldml.defaultNS
+        .flatMap { n =>
+          LocaleRegistry.root.digitSymbols.find(_.ns == n).collect {
+            case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
+            case s                                                      => n
+          }
         }
-      }.getOrElse(LocaleRegistry.latn)
-    }
+        .getOrElse(LocaleRegistry.latn)
 
     LocaleRegistry
       .ldml(locale)
@@ -34,16 +34,23 @@ object DecimalFormatSymbols {
       .getOrElse(dfs)
   }
 
-  private def toDFS(locale: Locale, dfs: DecimalFormatSymbols, ldml: LDML,
-      ns: NumberingSystem): DecimalFormatSymbols = {
+  private def toDFS(
+      locale: Locale,
+      dfs: DecimalFormatSymbols,
+      ldml: LDML,
+      ns: NumberingSystem
+  ): DecimalFormatSymbols = {
 
     def parentSymbols(ldml: LDML, ns: NumberingSystem): Option[Symbols] =
       ldml.digitSymbols
         .find(_.ns == ns)
         .orElse(ldml.parent.flatMap(parentSymbols(_, ns)))
 
-    def parentSymbolR[A](ldml: LDML, ns: NumberingSystem,
-        contains: Symbols => Option[A]): Option[A] =
+    def parentSymbolR[A](
+        ldml: LDML,
+        ns: NumberingSystem,
+        contains: Symbols => Option[A]
+    ): Option[A] =
       parentSymbols(ldml, ns).flatMap {
         case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
           parentSymbolR(ldml, alias, contains)
@@ -53,8 +60,12 @@ object DecimalFormatSymbols {
             .orElse(ldml.parent.flatMap(parentSymbolR(_, ns, contains)))
       }
 
-    def setSymbol[A](ldml: LDML, ns: NumberingSystem,
-        contains: Symbols => Option[A], set: A => Unit): Unit =
+    def setSymbol[A](
+        ldml: LDML,
+        ns: NumberingSystem,
+        contains: Symbols => Option[A],
+        set: A => Unit
+    ): Unit =
       parentSymbolR(ldml, ns, contains).foreach(set)
 
     // Read the zero from the default numeric system
@@ -76,21 +87,19 @@ object DecimalFormatSymbols {
   }
 }
 
-class DecimalFormatSymbols(private[this] val locale: Locale)
-    extends Cloneable {
-  private[this] var zeroDigit: Char = 0
-  private[this] var minusSign: Char = 0
-  private[this] var decimalSeparator: Char = 0
+class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
+  private[this] var zeroDigit: Char         = 0
+  private[this] var minusSign: Char         = 0
+  private[this] var decimalSeparator: Char  = 0
   private[this] var groupingSeparator: Char = 0
-  private[this] var perMill: Char = 0
-  private[this] var percent: Char = 0
-  private[this] var digit: Char = 0
-  private[this] var patternSeparator: Char = 0
-  private[this] var infinity: String = null
-  private[this] var nan: String = null
-  private[this] var expSeparator: String = null
-  private[this] var exp: String = null
-
+  private[this] var perMill: Char           = 0
+  private[this] var percent: Char           = 0
+  private[this] var digit: Char             = 0
+  private[this] var patternSeparator: Char  = 0
+  private[this] var infinity: String        = null
+  private[this] var nan: String             = null
+  private[this] var expSeparator: String    = null
+  private[this] var exp: String             = null
 
   DecimalFormatSymbols.initialize(locale, this)
 
@@ -171,16 +180,16 @@ class DecimalFormatSymbols(private[this] val locale: Locale)
     obj match {
       case d: DecimalFormatSymbols =>
         d.getZeroDigit == getZeroDigit &&
-        d.getGroupingSeparator == getGroupingSeparator &&
-        d.getDecimalSeparator == getDecimalSeparator &&
-        d.getPerMill == getPerMill &&
-        d.getPercent == getPercent &&
-        d.getDigit == getDigit &&
-        d.getPatternSeparator == getPatternSeparator &&
-        d.getInfinity == getInfinity &&
-        d.getNaN == getNaN &&
-        d.getMinusSign == getMinusSign &&
-        d.getExponentSeparator == getExponentSeparator
+          d.getGroupingSeparator == getGroupingSeparator &&
+          d.getDecimalSeparator == getDecimalSeparator &&
+          d.getPerMill == getPerMill &&
+          d.getPercent == getPercent &&
+          d.getDigit == getDigit &&
+          d.getPatternSeparator == getPatternSeparator &&
+          d.getInfinity == getInfinity &&
+          d.getNaN == getNaN &&
+          d.getMinusSign == getMinusSign &&
+          d.getExponentSeparator == getExponentSeparator
 
       case _ => false
     }
@@ -188,7 +197,7 @@ class DecimalFormatSymbols(private[this] val locale: Locale)
   // Oddly the JVM seems to always return the same value
   // it breaks the hashCode contract
   override def hashCode(): Int = {
-    val prime = 31
+    val prime  = 31
     var result = 1
     result = prime * result + getZeroDigit().hashCode()
     result = prime * result + getGroupingSeparator().hashCode()

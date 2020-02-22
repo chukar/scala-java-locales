@@ -1,22 +1,17 @@
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 import sbt.Keys._
+import locales._
 
 val cldrVersion = settingKey[String]("The version of CLDR used.")
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  cldrVersion := "35",
+  cldrVersion := "36",
   version := s"0.6.0-cldr${cldrVersion.value}-SNAPSHOT",
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.1",
-  crossScalaVersions := {
-    if (scalaJSVersion.startsWith("0.6")) {
-      Seq("2.10.7", "2.11.12", "2.12.10", "2.13.1")
-    } else {
-      Seq("2.11.12", "2.12.10", "2.13.1")
-    }
-  },
+  crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
   scalacOptions ++= Seq("-deprecation", "-feature"),
   scalacOptions := {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -74,7 +69,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
       <contributor>
         <name>Marius B. Kotsbak</name>
         <url>https://github.com/mkotsbak</url>
-      </contributor>
+n      </contributor>
       <contributor>
         <name>Timothy Klim</name>
         <url>https://github.com/TimothyKlim</url>
@@ -120,24 +115,44 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     sources in (Compile, doc) := Seq.empty
   )
 
-lazy val testSuite = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
+  .settings(commonSettings: _*)
+  .configure(_.enablePlugins(LocalesPlugin))
+  .settings(
+    name := "scala-java-locales full locales database",
+    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    localesFilter := LocalesFilter.All,
+    nsFilter := NumberingSystemFilter.All,
+    calendarFilter := CalendarFilter.All,
+    currencyFilter := CurrencyFilter.All,
+    supportDateTimeFormats := true,
+    supportNumberFormats := true,
+    supportISOCodes := true,
+    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+  )
+
+lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .settings(
     publish := {},
     publishLocal := {},
     publishArtifact := false,
     libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.2" % "test",
-    testFrameworks += new TestFramework("utest.runner.Framework")
+    testFrameworks += new TestFramework("utest.runner.Framework"),
+    // libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.1.0-SNAPSHOT",
+    libraryDependencies += "org.scalameta" %%% "munit" % "0.5.2",
+    testFrameworks += new TestFramework("munit.Framework"),
+    scalaJSModuleKind := ModuleKind.CommonJSModule
   )
   .jsSettings(
     parallelExecution in Test := false,
     name := "scala-java-locales testSuite on JS"
   )
-  .jsConfigure(_.dependsOn(core.js, macroUtils))
+  .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullDb.js))
   .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
-    fork in Test := true,
+    // fork in Test := true,
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
     javaOptions in Test ++= Seq(
