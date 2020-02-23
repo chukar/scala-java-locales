@@ -26,4 +26,4 @@ jobs:
         run: csbt scalafmtCheckAll
       - name: Run tests
         run: |
-          csbt +macroUtils/publishLocal +testJS/test
+          csbt +macroUtils/publishLocal +testsJS/test
