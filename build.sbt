@@ -1,4 +1,4 @@
-import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
+import sbtcrossproject.CrossPlugin.autoImport.{ CrossType, crossProject }
 import sbt.Keys._
 import locales._
 
@@ -75,9 +75,7 @@ n      </contributor>
         <url>https://github.com/TimothyKlim</url>
       </contributor>
     </contributors>,
-  pomIncludeRepository := { _ =>
-    false
-  }
+  pomIncludeRepository := { _ => false }
 )
 
 lazy val scalajs_locales: Project = project
@@ -106,7 +104,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
         else s"v${version.value}"
       (sourceDirectories in Compile).value.map { dir =>
         val a = dir.toURI.toString
-        val g = "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
+        val g =
+          "https://raw.githubusercontent.com/cquiroz/scala-java-locales/" + tagOrHash + "/core/src/main/scala"
         s"-P:scalajs:mapSourceURI:$a->$g/"
       }
     }
@@ -149,7 +148,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
   .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
     // Fork the JVM test to ensure that the custom flags are set
-    // fork in Test := true,
+    fork in Test := true,
     // Use CLDR provider for locales
     // https://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html#cldr
     javaOptions in Test ++= Seq(
@@ -158,9 +157,10 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Djava.locale.providers=CLDR",
       "-Dfile.encoding=UTF8"
     ),
-    name := "scala-java-locales testSuite on JVM"
+    name := "scala-java-locales testSuite on JVM",
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.2"
   )
-  .jvmConfigure(_.dependsOn(core.jvm, macroUtils))
+  .jvmConfigure(_.dependsOn(macroUtils))
 
 lazy val macroUtils = project
   .in(file("macroUtils"))

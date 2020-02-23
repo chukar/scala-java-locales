@@ -3,9 +3,8 @@ package testsuite.javalib.text
 import java.text.DateFormatSymbols
 import java.util.Locale
 
-import locales.{ CalendarConstants, LocaleRegistry }
+import locales.CalendarConstants
 import locales.cldr.LDML
-import locales.cldr.data._
 
 import testsuite.utils.Platform
 import testsuite.utils.AssertThrows.expectThrows
@@ -24,7 +23,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
     eras:          List[String]
   )
 
-  val root = LocaleRegistry.root
+  val root = Locale.ROOT
 
   // Note that in the JVM the months array is always 13 long :S
   // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4146173

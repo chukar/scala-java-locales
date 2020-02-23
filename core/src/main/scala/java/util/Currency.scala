@@ -1,13 +1,12 @@
 package java.util
 
-import locales.LocaleRegistry
 import scala.collection.{ Map => SMap, Set => SSet }
 import scala.collection.JavaConverters._
 import locales.cldr.{ CurrencyDataFractionsInfo, CurrencyType }
 
 object Currency {
   private val countryCodeToCurrencyCodeMap: SMap[String, String] =
-    LocaleRegistry.currencydata.regions.map { r =>
+    LocalesDb.currencydata.regions.map { r =>
       r.countryCode -> r.currencies
         .find(_.to.isEmpty)
         .orElse(r.currencies.headOption)
@@ -15,16 +14,16 @@ object Currency {
         .get
     }.toMap
 
-  private val all: SSet[Currency] = LocaleRegistry.currencydata.currencyTypes.map {
+  private val all: SSet[Currency] = LocalesDb.currencydata.currencyTypes.map {
     currencyType: CurrencyType =>
       val fractions: CurrencyDataFractionsInfo =
-        LocaleRegistry.currencydata.fractions
+        LocalesDb.currencydata.fractions
           .find(_.currencyCode == currencyType.currencyCode)
-          .orElse(LocaleRegistry.currencydata.fractions.find(_.currencyCode == "DEFAULT"))
+          .orElse(LocalesDb.currencydata.fractions.find(_.currencyCode == "DEFAULT"))
           .get
 
       val numericCode: Int =
-        LocaleRegistry.currencydata.numericCodes
+        LocalesDb.currencydata.numericCodes
           .find(_.currencyCode == currencyType.currencyCode)
           .map(_.numericCode)
           .getOrElse(0)
@@ -83,7 +82,7 @@ final case class Currency private (
 
   // Gets the name that is suitable for displaying this currency for the specified locale.
   def getDisplayName(locale: Locale): String =
-    LocaleRegistry
+    LocalesDb
       .ldml(locale)
       .flatMap { ldml =>
         ldml.getNumberCurrencyDescription(currencyCode).find(_.count.isEmpty).map(_.name)
@@ -98,7 +97,7 @@ final case class Currency private (
 
   // Gets the symbol of this currency for the specified locale.
   def getSymbol(locale: Locale): String =
-    LocaleRegistry
+    LocalesDb
       .ldml(locale)
       .flatMap { ldml =>
         val symbols = ldml.getNumberCurrencySymbol(currencyCode)

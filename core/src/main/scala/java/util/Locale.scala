@@ -1,44 +1,89 @@
 package java.util
 
-import locales.{ BCP47, LocaleRegistry }
-
+import locales.BCP47
 import scala.collection.{ Map => SMap, Set => SSet }
 import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 import locales.BCP47.{ GrandfatheredTag, LanguageTag, PrivateUseTag }
 import locales.cldr.LocalesProvider
+import locales.cldr.CLDRMetadata
+import locales.cldr.LDML
+import locales.cldr.NumberingSystem
+import org.portablescala.reflect._
+
+private[java] object LocalesDb {
+
+  val provider: LocalesProvider =
+    Reflect
+      .lookupLoadableModuleClass("locales.cldr.data.LocalesProvider$", null)
+      .getOrElse(sys.error("Needs a locale provider"))
+      .loadModule
+      .asInstanceOf[LocalesProvider]
+
+  val root: LDML = provider.root
+
+  val latn: NumberingSystem = provider.latn
+
+  val ldmls = provider.ldmls
+
+  val metadata: CLDRMetadata = provider.metadata
+
+  val currencydata = provider.currencyData
+
+  /**
+    * Attempts to give a Locale for the given tag if available
+    */
+  def localeForLanguageTag(languageTag: String): Option[Locale] =
+    // TODO Support alternative tags for the same locale
+    if (languageTag == "und") {
+      Some(Locale.ROOT)
+    } else
+      provider.ldmls.get(languageTag).map(_.toLocale)
+
+  /**
+    * Returns the ldml for the given locale
+    */
+  def ldml(locale: Locale): Option[LDML] = {
+    val tag =
+      if (locale.toLanguageTag() == "zh-CN") "zh-Hans-CN"
+      else if (locale.toLanguageTag() == "zh-TW") "zh-Hant-TW"
+      else locale.toLanguageTag()
+    provider.ldmls.get(tag)
+  }
+}
 
 object Locale {
+  import LocalesDb._
 
   // Default locales required by the specs
-  lazy val ENGLISH: Locale  = LocaleRegistry.localeForLanguageTag("en").getOrElse(ROOT)
-  lazy val FRENCH: Locale   = LocaleRegistry.localeForLanguageTag("fr").getOrElse(ROOT)
-  lazy val GERMAN: Locale   = LocaleRegistry.localeForLanguageTag("de").getOrElse(ROOT)
-  lazy val ITALIAN: Locale  = LocaleRegistry.localeForLanguageTag("it").getOrElse(ROOT)
-  lazy val JAPANESE: Locale = LocaleRegistry.localeForLanguageTag("ja").getOrElse(ROOT)
-  lazy val KOREAN: Locale   = LocaleRegistry.localeForLanguageTag("ko").getOrElse(ROOT)
-  lazy val CHINESE: Locale  = LocaleRegistry.localeForLanguageTag("zh").getOrElse(ROOT)
+  lazy val ENGLISH: Locale  = localeForLanguageTag("en").getOrElse(ROOT)
+  lazy val FRENCH: Locale   = localeForLanguageTag("fr").getOrElse(ROOT)
+  lazy val GERMAN: Locale   = localeForLanguageTag("de").getOrElse(ROOT)
+  lazy val ITALIAN: Locale  = localeForLanguageTag("it").getOrElse(ROOT)
+  lazy val JAPANESE: Locale = localeForLanguageTag("ja").getOrElse(ROOT)
+  lazy val KOREAN: Locale   = localeForLanguageTag("ko").getOrElse(ROOT)
+  lazy val CHINESE: Locale  = localeForLanguageTag("zh").getOrElse(ROOT)
   lazy val SIMPLIFIED_CHINESE: Locale = {
-    val l = LocaleRegistry.ldmls.getOrElse("zh-Hans-CN", LocaleRegistry.root)
+    val l = ldmls.getOrElse("zh-Hans-CN", root)
     l.copy(locale = l.locale.copy(script = None)).toLocale
   }
   lazy val TRADITIONAL_CHINESE: Locale = {
-    val l = LocaleRegistry.ldmls.getOrElse("zh-Hant-TW", LocaleRegistry.root)
+    val l = ldmls.getOrElse("zh-Hant-TW", root)
     l.copy(locale = l.locale.copy(script = None)).toLocale
   }
-  lazy val FRANCE: Locale        = LocaleRegistry.localeForLanguageTag("fr-FR").getOrElse(ROOT)
-  lazy val GERMANY: Locale       = LocaleRegistry.localeForLanguageTag("de-DE").getOrElse(ROOT)
-  lazy val ITALY: Locale         = LocaleRegistry.localeForLanguageTag("it-IT").getOrElse(ROOT)
-  lazy val JAPAN: Locale         = LocaleRegistry.localeForLanguageTag("ja-JP").getOrElse(ROOT)
-  lazy val KOREA: Locale         = LocaleRegistry.localeForLanguageTag("ko-KR").getOrElse(ROOT)
+  lazy val FRANCE: Locale        = localeForLanguageTag("fr-FR").getOrElse(ROOT)
+  lazy val GERMANY: Locale       = localeForLanguageTag("de-DE").getOrElse(ROOT)
+  lazy val ITALY: Locale         = localeForLanguageTag("it-IT").getOrElse(ROOT)
+  lazy val JAPAN: Locale         = localeForLanguageTag("ja-JP").getOrElse(ROOT)
+  lazy val KOREA: Locale         = localeForLanguageTag("ko-KR").getOrElse(ROOT)
   lazy val CHINA: Locale         = SIMPLIFIED_CHINESE
   lazy val PRC: Locale           = SIMPLIFIED_CHINESE
   lazy val TAIWAN: Locale        = TRADITIONAL_CHINESE
-  lazy val UK: Locale            = LocaleRegistry.localeForLanguageTag("en-GB").getOrElse(ROOT)
-  lazy val US: Locale            = LocaleRegistry.localeForLanguageTag("en-US").getOrElse(ROOT)
-  lazy val CANADA: Locale        = LocaleRegistry.localeForLanguageTag("en-CA").getOrElse(ROOT)
-  lazy val CANADA_FRENCH: Locale = LocaleRegistry.localeForLanguageTag("fr-CA").getOrElse(ROOT)
-  lazy val ROOT: Locale          = LocaleRegistry.root.toLocale
+  lazy val UK: Locale            = localeForLanguageTag("en-GB").getOrElse(ROOT)
+  lazy val US: Locale            = localeForLanguageTag("en-US").getOrElse(ROOT)
+  lazy val CANADA: Locale        = localeForLanguageTag("en-CA").getOrElse(ROOT)
+  lazy val CANADA_FRENCH: Locale = localeForLanguageTag("fr-CA").getOrElse(ROOT)
+  lazy val ROOT: Locale          = root.toLocale
 
   val PRIVATE_USE_EXTENSION: Char    = 'x'
   val UNICODE_LOCALE_EXTENSION: Char = 'u'
@@ -293,21 +338,47 @@ object Locale {
       )
   }
 
-  def getDefault(): Locale = LocaleRegistry.default
+  private var defaultLocale: Locale = LocalesDb.root.toLocale
+  private var defaultPerCategory: SMap[Locale.Category, Option[Locale]] =
+    Locale.Category.values().map(_ -> Some(defaultLocale)).toMap
 
-  def getDefault(category: Category): Locale = LocaleRegistry.default(category)
+  private def default: Locale = defaultLocale
 
-  def setDefault(newLocale: Locale): Unit = LocaleRegistry.setDefault(newLocale)
+  private def default(category: Locale.Category): Locale =
+    if (category == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory
+        .get(category)
+        .flatten
+        .getOrElse(throw new IllegalStateException(s"No default locale set for category $category"))
+    }
 
-  def setDefault(category: Category, newLocale: Locale): Unit =
-    LocaleRegistry.setDefault(category, newLocale)
+  def setDefault(newLocale: Locale): Unit = {
+    if (newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    }
+    defaultLocale      = newLocale
+    defaultPerCategory = Locale.Category.values().map(_ -> Some(newLocale)).toMap
+  }
+
+  def setDefault(category: Locale.Category, newLocale: Locale): Unit =
+    if (category == null || newLocale == null) {
+      throw new NullPointerException("Argument cannot be null")
+    } else {
+      defaultPerCategory = defaultPerCategory + (category -> Some(newLocale))
+    }
+
+  def getDefault(): Locale = default
+
+  def getDefault(category: Category): Locale = default(category)
 
   def getAvailableLocales(): Array[Locale] =
-    LocaleRegistry.availableLocales.toArray
+    LocalesDb.provider.ldmls.map(_._2.toLocale).toArray
 
-  def getISOCountries(): Array[String] = LocaleRegistry.metadata.isoCountries
+  def getISOCountries(): Array[String] = metadata.isoCountries
 
-  def getISOLanguages(): Array[String] = LocaleRegistry.metadata.isoLanguages
+  def getISOLanguages(): Array[String] = metadata.isoLanguages
 
   private def parseLanguageTag(tag: String): Option[Locale] = {
     // grandfathered mapping
@@ -403,8 +474,7 @@ object Locale {
   }
 
   def forLanguageTag(languageTag: String): Locale =
-    LocaleRegistry
-      .localeForLanguageTag(languageTag)
+    localeForLanguageTag(languageTag)
       .orElse(parseLanguageTag(languageTag))
       .getOrElse(ROOT)
 
@@ -589,7 +659,7 @@ class Locale private[util] (
   def getISO3Country(): String =
     if (country.isEmpty) ""
     else
-      LocaleRegistry.metadata.iso3Countries
+      LocalesDb.metadata.iso3Countries
         .getOrElse(
           country,
           throw new MissingResourceException(
@@ -603,7 +673,7 @@ class Locale private[util] (
     if (language.isEmpty) ""
     else if (language.lengthCompare(3) == 0) language
     else
-      LocaleRegistry.metadata.iso3Languages
+      LocalesDb.metadata.iso3Languages
         .getOrElse(
           language,
           throw new MissingResourceException(

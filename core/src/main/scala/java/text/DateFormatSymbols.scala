@@ -2,7 +2,7 @@ package java.text
 
 import java.util.{ Arrays, Locale }
 
-import locales.LocaleRegistry
+import java.util.LocalesDb
 import locales.cldr.{ CalendarSymbols, LDML }
 
 object DateFormatSymbols {
@@ -16,7 +16,7 @@ object DateFormatSymbols {
     initialize(locale, new DateFormatSymbols(locale))
 
   private def initialize(locale: Locale, dfs: DateFormatSymbols): DateFormatSymbols =
-    LocaleRegistry
+    LocalesDb
       .ldml(locale)
       .map(l => toDFS(locale, dfs, l))
       .getOrElse(dfs)

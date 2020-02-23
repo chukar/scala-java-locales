@@ -2,7 +2,7 @@ package java.text
 
 import java.util.Locale
 
-import locales.LocaleRegistry
+import java.util.LocalesDb
 import locales.cldr.{ CalendarPatterns, LDML }
 
 abstract class DateFormat protected () extends Format
@@ -61,7 +61,7 @@ object DateFormat {
     getTimeInstance(style, Locale.getDefault(Locale.Category.FORMAT))
 
   final def getTimeInstance(style: Int, aLocale: Locale): DateFormat =
-    LocaleRegistry
+    LocalesDb
       .ldml(aLocale)
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.timePatterns.get(style))
@@ -75,7 +75,7 @@ object DateFormat {
     getDateInstance(style, Locale.getDefault(Locale.Category.FORMAT))
 
   final def getDateInstance(style: Int, aLocale: Locale): DateFormat =
-    LocaleRegistry
+    LocalesDb
       .ldml(aLocale)
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.datePatterns.get(style))
@@ -89,7 +89,7 @@ object DateFormat {
     getDateTimeInstance(dateStyle, timeStyle, Locale.getDefault(Locale.Category.FORMAT))
 
   final def getDateTimeInstance(dateStyle: Int, timeStyle: Int, aLocale: Locale): DateFormat =
-    LocaleRegistry
+    LocalesDb
       .ldml(aLocale)
       .flatMap { ldml =>
         val datePtrn = patternsR(ldml, _.datePatterns.get(dateStyle))

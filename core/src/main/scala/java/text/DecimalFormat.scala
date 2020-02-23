@@ -2,7 +2,8 @@ package java.text
 
 import java.math.{ RoundingMode, BigDecimal => JavaBigDecimal, BigInteger => JavaBigInteger }
 import java.util.{ Currency, Locale }
-import locales.{ DecimalFormatUtil, LocaleRegistry, ParsedPattern }
+import java.util.LocalesDb
+import locales.{ DecimalFormatUtil, ParsedPattern }
 import scala.math.{ max, min }
 
 // The constructor needs a non-localized pattern
@@ -15,7 +16,7 @@ class DecimalFormat(
 
   def this() = {
     this(
-      LocaleRegistry
+      LocalesDb
         .ldml(Locale.getDefault)
         .flatMap(_.numberPatterns.decimalFormat)
         .getOrElse("#,##0.##"),

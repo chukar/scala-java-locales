@@ -1,9 +1,7 @@
 package java.text
 
 import java.util.Locale
-
-import locales.LocaleRegistry
-
+import java.util.LocalesDb
 import locales.cldr.{ LDML, NumberingSystem, Symbols }
 
 object DecimalFormatSymbols {
@@ -21,14 +19,14 @@ object DecimalFormatSymbols {
     def ns(ldml: LDML): NumberingSystem =
       ldml.defaultNS
         .flatMap { n =>
-          LocaleRegistry.root.digitSymbols.find(_.ns == n).collect {
+          LocalesDb.root.digitSymbols.find(_.ns == n).collect {
             case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
             case s                                                      => n
           }
         }
-        .getOrElse(LocaleRegistry.latn)
+        .getOrElse(LocalesDb.latn)
 
-    LocaleRegistry
+    LocalesDb
       .ldml(locale)
       .map(l => toDFS(locale, dfs, l, ns(l)))
       .getOrElse(dfs)

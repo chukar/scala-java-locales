@@ -4,7 +4,7 @@ import java.text.{ DecimalFormat, DecimalFormatSymbols, NumberFormat }
 import java.util.Locale
 import java.math.RoundingMode
 
-import locales.{ DecimalFormatUtil, LocaleRegistry }
+import locales.DecimalFormatUtil
 import testsuite.utils.Platform
 import testsuite.utils.AssertThrows._
 

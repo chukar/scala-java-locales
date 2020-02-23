@@ -47,7 +47,7 @@ trait CurrencyTest extends munit.FunSuite {
     LocaleCurrencyTest(
       Locale.CHINA,
       jsResults  = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
-      jvmResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币")
+      jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
     ),
     LocaleCurrencyTest(
       Locale.FRANCE,
@@ -77,7 +77,7 @@ trait CurrencyTest extends munit.FunSuite {
     LocaleCurrencyTest(
       Locale.PRC,
       jsResults  = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
-      jvmResults = CurrencyTestResults("CNY", 156, 2, "¥", "人民币")
+      jvmResults = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
     ),
     LocaleCurrencyTest(
       Locale.TAIWAN,
@@ -214,7 +214,7 @@ trait CurrencyTest extends munit.FunSuite {
         CodeCurrencyTest(
           currencyCode = "CNY",
           jsResults    = CurrencyTestResults("CNY", 156, 2, "¥", "人民币"),
-          jvmResults   = CurrencyTestResults("CNY", 156, 2, "¥", "人民币")
+          jvmResults   = CurrencyTestResults("CNY", 156, 2, "￥", "人民币")
         ),
         CodeCurrencyTest(
           currencyCode = "TWD",

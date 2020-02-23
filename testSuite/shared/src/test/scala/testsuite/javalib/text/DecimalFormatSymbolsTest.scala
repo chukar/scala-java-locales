@@ -2,12 +2,7 @@ package testsuite.javalib.text
 
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-
-import locales.LocaleRegistry
-
 import locales.cldr.LDML
-import locales.cldr.data._
-
 import testsuite.utils.Platform
 import testsuite.utils.AssertThrows.expectThrows
 

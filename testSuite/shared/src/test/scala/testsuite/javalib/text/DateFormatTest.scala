@@ -3,13 +3,12 @@ package testsuite.javalib.text
 import java.text.{ DateFormat, DateFormatSymbols, SimpleDateFormat }
 import java.util.Locale
 
-import locales.LocaleRegistry
 import locales.cldr.LDML
 import testsuite.utils.Platform
 
 class DateFormatTest extends munit.FunSuite {
   Locale.setDefault(Locale.ENGLISH)
-  val root = LocaleRegistry.root
+  val root = Locale.ROOT
 
   case class TestCase(
     tag:         String,

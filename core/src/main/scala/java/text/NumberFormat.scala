@@ -2,8 +2,7 @@ package java.text
 
 import java.math.RoundingMode
 import java.util.{ Currency, Locale }
-
-import locales.LocaleRegistry
+import java.util.LocalesDb
 import locales.cldr.{ LDML, NumberPatterns }
 
 abstract class NumberFormat protected () extends Format {
@@ -91,7 +90,7 @@ object NumberFormat {
     getInstance(Locale.getDefault(Locale.Category.FORMAT))
 
   def getNumberInstance(inLocale: Locale): NumberFormat =
-    LocaleRegistry
+    LocalesDb
       .ldml(inLocale)
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.decimalFormat)
@@ -103,7 +102,7 @@ object NumberFormat {
     getIntegerInstance(Locale.getDefault(Locale.Category.FORMAT))
 
   def getIntegerInstance(inLocale: Locale): NumberFormat = {
-    val f = LocaleRegistry
+    val f = LocalesDb
       .ldml(inLocale)
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.decimalFormat)
@@ -127,7 +126,7 @@ object NumberFormat {
     getCurrencyInstance(Locale.getDefault(Locale.Category.FORMAT))
 
   final def getCurrencyInstance(inLocale: Locale): NumberFormat =
-    LocaleRegistry
+    LocalesDb
       .ldml(inLocale)
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.currencyFormat)
@@ -139,7 +138,7 @@ object NumberFormat {
     getPercentInstance(Locale.getDefault(Locale.Category.FORMAT))
 
   def getPercentInstance(inLocale: Locale): NumberFormat =
-    LocaleRegistry
+    LocalesDb
       .ldml(inLocale)
       .flatMap { ldml =>
         val ptrn = patternsR(ldml, _.percentFormat)
