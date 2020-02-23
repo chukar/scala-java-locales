@@ -97,7 +97,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.1.0-SNAPSHOT"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.2"
   )
   .jsSettings(
     scalacOptions ++= {

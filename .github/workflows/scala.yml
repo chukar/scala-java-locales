@@ -26,5 +26,4 @@ jobs:
         run: csbt scalafmtCheckAll
       - name: Run tests
         run: |
-          csbt -Djava.locale.providers=CLDR +macroUtils/publishLocal
-          csbt compile
+          csbt +macroUtils/publishLocal +testJS/test
