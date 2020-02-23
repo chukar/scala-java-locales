@@ -4,8 +4,6 @@ import locales._
 
 val cldrVersion = settingKey[String]("The version of CLDR used.")
 
-Global / onChangedBuildSource := ReloadOnSourceChanges
-
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "36",
   version := s"0.6.0-cldr${cldrVersion.value}-SNAPSHOT",
@@ -22,21 +20,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
     }
   },
   scalacOptions in (Compile, doc) := Seq(),
-  mappings in (Compile, packageBin) ~= {
-    // Exclude CLDR files...
-    _.filter(!_._2.contains("core"))
-  },
-  useGpg := true,
-  exportJars := true,
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots".at(nexus + "content/repositories/snapshots"))
-    else
-      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
-  },
   pomExtra :=
     <url>https://github.com/cquiroz/scala-java-locales</url>
     <licenses>
@@ -74,15 +57,40 @@ n      </contributor>
         <name>Timothy Klim</name>
         <url>https://github.com/TimothyKlim</url>
       </contributor>
-    </contributors>,
-  pomIncludeRepository := { _ => false }
+    </contributors>
+)
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
+inThisBuild(
+  List(
+    organization := "io.github.cquiroz",
+    homepage := Some(url("https://github.com/cquiroz/scala-java-locales")),
+    licenses := Seq("BSD 3-Clause License" -> url("https://opensource.org/licenses/BSD-3-Clause")),
+    developers := List(
+      Developer("cquiroz",
+                "Carlos Quiroz",
+                "carlos.m.quiroz@gmail.com",
+                url("https://github.com/cquiroz")),
+      Developer("er1c", "Eric Peters", "", url("https://github.com/er1c")),
+      Developer("alonsodomin", "A. Alonso Dominguez", "", url("https://github.com/alonsodomin")),
+      Developer("mkotsbak", "Marius B. Kotsbak", "", url("https://github.com/mkotsbak")),
+      Developer("TimothyKlim", "Timothy Klim", "", url("https://github.com/TimothyKlim"))
+    ),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/cquiroz/scala-java-locales"),
+        "scm:git:git@github.com:cquiroz/scala-java-locales.git"
+      )
+    )
+  )
 )
 
 lazy val scalajs_locales: Project = project
   .in(file("."))
   .settings(commonSettings: _*)
   .settings(
-    name := "root",
+    name := "locales",
     publish := {},
     publishLocal := {},
     publishArtifact := false
