@@ -234,7 +234,9 @@ class DecimalFormat(
         val truncatedStr: String = unscaledString.dropWhile(_ == symbols.getZeroDigit)
 
         truncatedStr +
-          (0 until (fractionMaxDigits - unscaledString.length)).map(_ => symbols.getZeroDigit).mkString
+          (0 until (fractionMaxDigits - unscaledString.length))
+            .map(_ => symbols.getZeroDigit)
+            .mkString
       }.reverse
 
       // Add our fraction with significant prefix zeroes
