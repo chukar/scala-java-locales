@@ -65,9 +65,8 @@ final case class Currency private (
   numericCode:    Int,
   fractionDigits: Int,
   defaultName:    String,
-  currencyLocale: Option[Locale] = None
+  currencyLocale: Option[Locale]
 ) {
-  import Currency._
 
   def defaultLocale: Locale = currencyLocale.getOrElse(Locale.getDefault)
 

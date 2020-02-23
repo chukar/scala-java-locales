@@ -33,10 +33,8 @@ class DecimalFormat(
 
   // Helpers to avoid using .compareTo, annoying have to re-import within defs
   private val bigIntegerOrdering = implicitly[Ordering[JavaBigInteger]]
-  import bigIntegerOrdering.mkOrderingOps
 
   private val bigDecimalOrdering = implicitly[Ordering[JavaBigDecimal]]
-  import bigDecimalOrdering.mkOrderingOps
 
   // Need to be able to update the complete pattern for this instance
   private def usePattern(p: String): ParsedPattern = {
@@ -164,7 +162,8 @@ class DecimalFormat(
     val prefix: String = if (isNegative) getNegativePrefix() else getPositivePrefix()
     toAppendTo.append(prefix)
 
-    val multiplied: JavaBigDecimal = number.multiply(JavaBigDecimal.valueOf(getMultiplier)).abs
+    val multiplied: JavaBigDecimal =
+      number.multiply(JavaBigDecimal.valueOf(getMultiplier.toLong)).abs
 
     // Round the target number based upon expected fractions, so we can compare it to the integer
     val (targetNumber: JavaBigDecimal, expPower: Int) =
@@ -474,10 +473,6 @@ class DecimalFormat(
       minimumIntegerDigits = parsedPattern.minimumIntegerDigits.map(min(_, newMax))
     )
   }
-
-  private def minFractionDigitsAreEmpty: Boolean =
-    parsedPattern.minimumFractionDigits.isEmpty ||
-      parsedPattern.minimumFractionDigits.exists(_ == 0)
 
   override def getMinimumIntegerDigits(): Int = parsedPattern.minimumIntegerDigits.getOrElse(0)
 

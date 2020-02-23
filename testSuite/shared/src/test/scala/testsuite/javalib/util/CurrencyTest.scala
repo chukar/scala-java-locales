@@ -238,9 +238,6 @@ trait CurrencyTest extends munit.FunSuite {
   private def testCurrency(currency: Currency, expectedResults: CurrencyTestResults): Unit = {
     import expectedResults._
 
-    def currentTestMsg: String =
-      s"defaultLocale: ${Locale.getDefault}, currency: ${currency}, expectedResults: $expectedResults"
-
     assertEquals(expectedCurrencyCode, currency.getCurrencyCode)
     assertEquals(expectedNumericCode, currency.getNumericCode)
     assertEquals(expectedFractionDigits, currency.getDefaultFractionDigits)

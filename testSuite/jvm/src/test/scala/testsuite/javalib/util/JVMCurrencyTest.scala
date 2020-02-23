@@ -1,8 +1,6 @@
 package testsuite.javalib.util
 
-import java.util.Locale
 import java.util.Currency
-import testsuite.utils.AssertThrows.expectThrows
 
 class JVMCurrencyTest extends munit.FunSuite with CurrencyTest {
 

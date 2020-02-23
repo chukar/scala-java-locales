@@ -10,12 +10,12 @@ class SimpleDateFormatTest extends munit.FunSuite {
   final val time = 1491381282242L
   val date       = new Date(time)
   val jvmDate    = JVMDate.get(time)
-  val year       = totalSize((1900 + jvmDate.year), 4)
-  val month      = totalSize(1 + jvmDate.month, 2)
-  val day        = totalSize(jvmDate.date, 2)
-  val hours      = totalSize(jvmDate.hours, 2)
-  val minutes    = totalSize(jvmDate.minutes, 2)
-  val seconds    = totalSize(jvmDate.seconds, 2)
+  val year       = totalSize((1900 + jvmDate.year.toLong), 4)
+  val month      = totalSize(1 + jvmDate.month.toLong, 2)
+  val day        = totalSize(jvmDate.date.toLong, 2)
+  val hours      = totalSize(jvmDate.hours.toLong, 2)
+  val minutes    = totalSize(jvmDate.minutes.toLong, 2)
+  val seconds    = totalSize(jvmDate.seconds.toLong, 2)
   val millis = totalSize(
     date.getTime - Date.UTC(
       date.getYear,

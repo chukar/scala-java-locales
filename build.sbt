@@ -11,6 +11,17 @@ val commonSettings: Seq[Setting[_]] = Seq(
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
   scalacOptions ++= Seq("-deprecation", "-feature"),
+  scalacOptions ~= (_.filterNot(
+    Set(
+      // By necessity facades will have unused params
+      "-Wdead-code",
+      "-Ywarn-dead-code",
+      "-Wunused:params",
+      "-Ywarn-unused:params",
+      "-Wvalue-discard",
+      "-Ywarn-value-discard"
+    )
+  )),
   scalacOptions := {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>

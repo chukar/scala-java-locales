@@ -2,7 +2,6 @@ package testsuite.javalib.text
 
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-import locales.cldr.LDML
 import testsuite.utils.Platform
 import testsuite.utils.AssertThrows.expectThrows
 

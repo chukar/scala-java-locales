@@ -4,8 +4,6 @@ import java.math.RoundingMode
 import java.text.{ DecimalFormat, DecimalFormatSymbols, NumberFormat }
 import java.util.Locale
 
-import testsuite.utils.Platform
-
 // Need Locale for Currency support
 class DecimalFormatTest extends munit.FunSuite {
   Locale.setDefault(Locale.US)

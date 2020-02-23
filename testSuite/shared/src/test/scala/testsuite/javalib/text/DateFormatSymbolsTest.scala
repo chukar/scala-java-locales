@@ -2,10 +2,7 @@ package testsuite.javalib.text
 
 import java.text.DateFormatSymbols
 import java.util.Locale
-
 import locales.CalendarConstants
-import locales.cldr.LDML
-
 import testsuite.utils.Platform
 import testsuite.utils.AssertThrows.expectThrows
 
@@ -1694,7 +1691,7 @@ class DateFormatSymbolsTest extends munit.FunSuite {
 
   test("default_locales_date_format_symbol_with_cldr21") {
     standardLocalesDataDiff.foreach {
-      case (l, t @ LocaleTestItem(m, cldr21, _, _, _, _, _, _)) =>
+      case (l, t @ LocaleTestItem(_, cldr21, _, _, _, _, _, _)) =>
         val dfs = DateFormatSymbols.getInstance(l)
         if (Platform.executingInJVM && cldr21) {
           test_dfs(dfs, t)

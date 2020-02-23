@@ -20,8 +20,8 @@ object DecimalFormatSymbols {
       ldml.defaultNS
         .flatMap { n =>
           LocalesDb.root.digitSymbols.find(_.ns == n).collect {
-            case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
-            case s                                                      => n
+            case Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) => alias
+            case _                                                  => n
           }
         }
         .getOrElse(LocalesDb.latn)
@@ -50,7 +50,7 @@ object DecimalFormatSymbols {
       contains: Symbols => Option[A]
     ): Option[A] =
       parentSymbols(ldml, ns).flatMap {
-        case s @ Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
+        case Symbols(_, Some(alias), _, _, _, _, _, _, _, _, _) =>
           parentSymbolR(ldml, alias, contains)
 
         case s @ Symbols(_, _, _, _, _, _, _, _, _, _, _) =>
@@ -96,7 +96,6 @@ class DecimalFormatSymbols(private[this] val locale: Locale) extends Cloneable {
   private[this] var patternSeparator: Char  = 0
   private[this] var infinity: String        = null
   private[this] var nan: String             = null
-  private[this] var expSeparator: String    = null
   private[this] var exp: String             = null
 
   DecimalFormatSymbols.initialize(locale, this)

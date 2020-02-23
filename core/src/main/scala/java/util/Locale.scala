@@ -510,10 +510,10 @@ class Locale private[util] (
 
   // Handle 2 special cases jp_JP_JP and th_TH_TH
   private[this] val extensions = {
-    if ((language, country, variant) == ("ja", "JP", "JP") &&
+    if (((language, country, variant)) == (("ja", "JP", "JP")) &&
         supportSpecialCases) {
       _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "ca-japanese")
-    } else if ((language, country, variant) == ("th", "TH", "TH") &&
+    } else if (((language, country, variant)) == (("th", "TH", "TH")) &&
                supportSpecialCases) {
       _extensions + (Locale.UNICODE_LOCALE_EXTENSION -> "nu-thai")
     } else {

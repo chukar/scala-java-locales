@@ -1,9 +1,7 @@
 package testsuite.javalib.text
 
-import java.text.{ DateFormat, DateFormatSymbols, SimpleDateFormat }
+import java.text.{ DateFormat, SimpleDateFormat }
 import java.util.Locale
-
-import locales.cldr.LDML
 import testsuite.utils.Platform
 
 class DateFormatTest extends munit.FunSuite {
@@ -1537,7 +1535,7 @@ class DateFormatTest extends munit.FunSuite {
   test("bad_tag_matches_root_dfs") {
     val l = Locale.forLanguageTag("no_NO")
     stdLocalesDiff.foreach {
-      case tc @ TestCase(_, lo, cldr21, df, tf)
+      case tc @ TestCase(_, lo, cldr21, _, _)
           if lo == Locale.ROOT && ((Platform.executingInJVM && cldr21) || (!Platform.executingInJVM && !cldr21)) =>
         for {
           df <- tc.dateFormats
