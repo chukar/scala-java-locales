@@ -10,10 +10,8 @@ val commonSettings: Seq[Setting[_]] = Seq(
   organization := "io.github.cquiroz",
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1"),
-  scalacOptions ++= Seq("-deprecation", "-feature"),
   scalacOptions ~= (_.filterNot(
     Set(
-      // By necessity facades will have unused params
       "-Wdead-code",
       "-Ywarn-dead-code",
       "-Wunused:params",
@@ -22,53 +20,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
       "-Ywarn-value-discard"
     )
   )),
-  scalacOptions := {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        scalacOptions.value ++ Seq("-deprecation:false", "-Xfatal-warnings")
-      case Some((2, 10)) =>
-        scalacOptions.value
-    }
-  },
-  scalacOptions in (Compile, doc) := Seq(),
-  pomExtra :=
-    <url>https://github.com/cquiroz/scala-java-locales</url>
-    <licenses>
-      <license>
-        <name>BSD-style</name>
-        <url>http://www.opensource.org/licenses/bsd-license.php</url>
-        <distribution>repo</distribution>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:cquiroz/scala-java-locales.git</url>
-      <connection>scm:git:git@github.com:cquiroz/scala-java-locales.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>cquiroz</id>
-        <name>Carlos Quiroz</name>
-        <url>https://github.com/cquiroz/</url>
-      </developer>
-    </developers>
-    <contributors>
-      <contributor>
-        <name>Eric Peters</name>
-        <url>https://github.com/er1c</url>
-      </contributor>
-      <contributor>
-        <name>A. Alonso Dominguez</name>
-        <url>https://github.com/alonsodomin</url>
-      </contributor>
-      <contributor>
-        <name>Marius B. Kotsbak</name>
-        <url>https://github.com/mkotsbak</url>
-n      </contributor>
-      <contributor>
-        <name>Timothy Klim</name>
-        <url>https://github.com/TimothyKlim</url>
-      </contributor>
-    </contributors>
+  scalacOptions in (Compile, doc) := Seq()
 )
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -114,7 +66,13 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.2"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.2",
+    scalacOptions ~= (_.filterNot(
+      Set(
+        "-deprecation",
+        "-Xfatal-warnings"
+      )
+    ))
   )
   .jsSettings(
     scalacOptions ++= {
@@ -157,7 +115,13 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishArtifact := false,
     libraryDependencies += "org.scalameta" %%% "munit" % "0.5.2",
     testFrameworks += new TestFramework("munit.Framework"),
-    scalaJSModuleKind := ModuleKind.CommonJSModule
+    scalaJSModuleKind := ModuleKind.CommonJSModule,
+    scalacOptions ~= (_.filterNot(
+      Set(
+        "-deprecation",
+        "-Xfatal-warnings"
+      )
+    ))
   )
   .jsSettings(
     parallelExecution in Test := false,
@@ -202,5 +166,11 @@ lazy val macroUtils = project
             )
         }
       }
-    }
+    },
+    scalacOptions ~= (_.filterNot(
+      Set(
+        "-deprecation",
+        "-Xfatal-warnings"
+      )
+    ))
   )

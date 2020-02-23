@@ -1,7 +1,8 @@
 package io.github.cquiroz.utils
 
 import java.util.Date
-import scala.reflect.macros.Context
+import scala.language.experimental.macros
+import scala.reflect.macros.whitebox.Context
 
 object JVMDate {
   type JVMDateT = {
