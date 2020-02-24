@@ -4,6 +4,10 @@ import locales._
 
 val cldrVersion = settingKey[String]("The version of CLDR used.")
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
+resolvers in Global += Resolver.sonatypeRepo("public")
+
 val commonSettings: Seq[Setting[_]] = Seq(
   cldrVersion := "36",
   version := s"0.6.0-cldr${cldrVersion.value}-SNAPSHOT",
@@ -22,8 +26,6 @@ val commonSettings: Seq[Setting[_]] = Seq(
   )),
   scalacOptions in (Compile, doc) := Seq()
 )
-
-Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(
   List(
@@ -66,7 +68,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.2",
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.7",
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
