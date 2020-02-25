@@ -61,7 +61,12 @@ lazy val scalajs_locales: Project = project
     publishArtifact := false
   )
   // don't include scala-native by default
-  .aggregate(core.js, core.jvm, testSuite.js, testSuite.jvm)
+  .aggregate(core.js,
+             core.jvm,
+             testSuite.js,
+             testSuite.jvm,
+             localesFullDb.js,
+             localesMinimalEnDb.js)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -109,6 +114,22 @@ lazy val localesFullDb = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
   )
 
+lazy val localesMinimalEnDb = crossProject(JVMPlatform, JSPlatform)
+  .settings(commonSettings: _*)
+  .configure(_.enablePlugins(LocalesPlugin))
+  .settings(
+    name := "scala-java-locales full locales database",
+    dbVersion := CLDRVersion.Version(cldrVersion.value),
+    localesFilter := LocalesFilter.Minimal,
+    nsFilter := NumberingSystemFilter.Minimal,
+    calendarFilter := CalendarFilter.Minimal,
+    currencyFilter := CurrencyFilter.None,
+    supportDateTimeFormats := true,
+    supportNumberFormats := true,
+    supportISOCodes := false,
+    libraryDependencies += "org.portable-scala" %%% "portable-scala-reflect" % "1.0.0"
+  )
+
 lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .settings(
@@ -117,7 +138,6 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
     publishArtifact := false,
     libraryDependencies += "org.scalameta" %%% "munit" % "0.5.2",
     testFrameworks += new TestFramework("munit.Framework"),
-    scalaJSModuleKind := ModuleKind.CommonJSModule,
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
