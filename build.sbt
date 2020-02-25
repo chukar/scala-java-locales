@@ -73,7 +73,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scala-java-locales",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.7",
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.8",
     scalacOptions ~= (_.filterNot(
       Set(
         "-deprecation",
@@ -145,10 +145,9 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       )
     ))
   )
-  .jsSettings(
-    parallelExecution in Test := false,
-    name := "scala-java-locales testSuite on JS"
-  )
+  .jsSettings(parallelExecution in Test := false,
+              name := "scala-java-locales testSuite on JS",
+              scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)))
   .jsConfigure(_.dependsOn(core.js, macroUtils, localesFullDb.js))
   .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
@@ -163,7 +162,7 @@ lazy val testSuite = crossProject(JVMPlatform, JSPlatform)
       "-Dfile.encoding=UTF8"
     ),
     name := "scala-java-locales testSuite on JVM",
-    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.2"
+    libraryDependencies += "io.github.cquiroz" %%% "cldr-api" % "0.0.8"
   )
   .jvmConfigure(_.dependsOn(macroUtils))
 
